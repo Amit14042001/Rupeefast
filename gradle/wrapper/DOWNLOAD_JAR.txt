@@ -1,0 +1,4 @@
+# Note: Download gradle-wrapper.jar from:
+# https://repo.gradle.org/gradle/libs-releases/org/gradle/gradle-wrapper/8.6/gradle-wrapper-8.6.jar
+# Rename to gradle-wrapper.jar and place here.
+# OR: Simply open in Android Studio - it will download automatically.

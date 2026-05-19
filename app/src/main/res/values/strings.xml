@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RupeeFast</string>
+    <string name="app_description">Emergency Cash. Daily Repayment. Trusted.</string>
+    <string name="loading">Loading RupeeFast…</string>
+</resources>

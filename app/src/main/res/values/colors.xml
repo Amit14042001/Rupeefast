@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#1B3A6B</color>
+    <color name="primary_light">#2562A8</color>
+    <color name="green">#0B6B4A</color>
+    <color name="amber">#9A6200</color>
+    <color name="red">#A02020</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="bg">#F4F4F6</color>
+    <color name="status_bar">#152E57</color>
+</resources>
