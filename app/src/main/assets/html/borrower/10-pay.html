@@ -1,0 +1,76 @@
+    <!-- ════════════════════════════════════════
+         BORROWER: PAYMENT FLOW (Razorpay)
+    ════════════════════════════════════════ -->
+    <div class="screen" id="screen-b-pay">
+      <div class="top-nav"><button class="back-btn" onclick="showScreen('screen-b-home')" aria-label="Go back"><i class="ti ti-arrow-left"></i></button><h2>Make Payment</h2></div>
+      <div class="scroll-body" style="background:var(--surface);">
+        <div style="text-align:center;padding:30px 24px;">
+          <div style="width:70px;height:70px;background:var(--green-bg);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:32px;color:var(--green);"><i class="ti ti-cash"></i></div>
+          <h2 style="font-size:22px;font-weight:700;">Today's Payment</h2>
+          <div style="font-size:40px;font-weight:800;color:var(--green);margin-top:12px;">₹120</div>
+          <p style="font-size:13px;color:var(--text3);margin-top:6px;">EMI — Day 33 of 100</p>
+        </div>
+
+        <!-- Active Mandate Status (shown if exists) -->
+        <div id="active-mandate-card" style="display:none;margin:0 12px 4px;">
+          <div class="card card-tint-green" style="border-left:3px solid var(--green);">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:36px;height:36px;background:var(--green-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--green);font-size:18px;"><i class="ti ti-shield-check"></i></div>
+              <div style="flex:1;">
+                <div style="font-weight:600;font-size:13px;">AutoPay Active</div>
+                <div style="font-size:11px;color:var(--text3);" id="mandate-status-text">UPI AutoPay · ₹120/day</div>
+              </div>
+              <button class="btn btn-ghost" style="padding:6px 12px;font-size:11px;" onclick="cancelActiveMandate()">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-hdr"><h3>Choose Payment Method</h3></div>
+
+        <div class="card payment-method-card selected" data-method="upi_autopay" style="border-left:3px solid var(--primary);cursor:pointer;" role="button" tabindex="0" aria-label="Select UPI AutoPay" onclick="selectPaymentMethod(this)">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <i class="ti ti-device-mobile" style="font-size:22px;color:var(--primary);"></i>
+            <div style="flex:1;"><div style="font-weight:600;font-size:14px;">UPI AutoPay</div><div style="font-size:12px;color:var(--text3);">Automatic daily payment via UPI</div></div>
+            <span class="badge badge-green">Recommended</span>
+            <div class="method-check" style="width:20px;height:20px;border:2px solid var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--primary);"><i class="ti ti-check" style="font-size:12px;color:#fff;"></i></div>
+          </div>
+        </div>
+
+        <div class="card payment-method-card" data-method="nach" style="margin-top:8px;cursor:pointer;" role="button" tabindex="0" aria-label="Select NACH Mandate" onclick="selectPaymentMethod(this)">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <i class="ti ti-building-bank" style="font-size:22px;color:var(--amber);"></i>
+            <div style="flex:1;"><div style="font-weight:600;font-size:14px;">NACH Mandate</div><div style="font-size:12px;color:var(--text3);">Auto-debit from bank account</div></div>
+            <div class="method-check" style="width:20px;height:20px;border:2px solid var(--border);border-radius:50%;"></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:8px;cursor:pointer;" role="button" tabindex="0" aria-label="Select Agent Collection" onclick="showToast('Agent collection available on the Home screen','info')">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <i class="ti ti-map-pin" style="font-size:22px;color:var(--purple);"></i>
+            <div style="flex:1;"><div style="font-weight:600;font-size:14px;">Agent Collection</div><div style="font-size:12px;color:var(--text3);">Pay to field agent</div></div>
+          </div>
+        </div>
+
+        <!-- Plan Summary Preview -->
+        <div class="card" style="margin-top:16px;background:var(--surface2);">
+          <div style="display:flex;justify-content:space-between;padding:6px 0;">
+            <span style="font-size:13px;color:var(--text3);">Payment Amount</span>
+            <span style="font-weight:700;">₹120</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;">
+            <span style="font-size:13px;color:var(--text3);">Frequency</span>
+            <span style="font-weight:700;" id="pay-summary-freq">Daily</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;">
+            <span style="font-size:13px;color:var(--text3);">Total Cycles</span>
+            <span style="font-weight:700;">100</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" style="margin:24px 12px 20px;" onclick="initiateRazorpayPayment()">
+          <i class="ti ti-lock"></i> Set Up AutoPay →</button>
+        <p style="text-align:center;font-size:11px;color:var(--text3);padding:0 20px 20px;">
+          <i class="ti ti-shield" style="font-size:11px;"></i> Secured by Razorpay. Your payment info is encrypted.
+        </p>
+      </div>
+    </div>

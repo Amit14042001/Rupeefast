@@ -1,0 +1,96 @@
+    <!-- ════════════════════════════════════════
+         AGENT: PERFORMANCE LEADERBOARD
+    ════════════════════════════════════════ -->
+    <div class="screen" id="screen-a-leaderboard">
+      <div class="top-nav" style="background:var(--amber);"><button class="back-btn" onclick="showScreen('screen-a-profile')" aria-label="Go back"><i class="ti ti-arrow-left"></i></button><h2>Leaderboard</h2></div>
+      <div class="scroll-body" style="background:var(--surface);">
+        <!-- Current Agent Position -->
+        <div class="card" style="background:linear-gradient(135deg,var(--amber),#D98A00);color:#fff;border:none;text-align:center;padding:24px;">
+          <div style="font-size:11px;opacity:0.8;font-weight:600;text-transform:uppercase;">Your Rank</div>
+          <div style="font-size:40px;font-weight:800;margin:4px 0;">#7</div>
+          <div style="font-size:13px;opacity:0.9;">Sunil Verma · Zone 4</div>
+          <div style="display:flex;gap:20px;justify-content:center;margin-top:14px;">
+            <div><div style="font-weight:700;font-size:16px;">134</div><div style="font-size:10px;opacity:0.7;">Tasks Done</div></div>
+            <div><div style="font-weight:700;font-size:16px;">4.8⭐</div><div style="font-size:10px;opacity:0.7;">Rating</div></div>
+            <div><div style="font-weight:700;font-size:16px;">₹3,240</div><div style="font-size:10px;opacity:0.7;">This Month</div></div>
+          </div>
+        </div>
+
+        <!-- Podium -->
+        <div class="section-hdr"><h3>Top Performers</h3></div>
+        <div style="display:flex;gap:8px;padding:0 12px;align-items:flex-end;">
+          <!-- 2nd Place -->
+          <div style="flex:1;text-align:center;">
+            <div style="width:44px;height:44px;border-radius:50%;background:var(--green-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-weight:700;color:var(--green);font-size:16px;">AM</div>
+            <div style="font-weight:600;font-size:12px;">Amit M.</div>
+            <div style="font-size:10px;color:var(--text3);">162 tasks</div>
+            <div style="width:100%;height:90px;background:var(--green-bg);border-radius:12px 12px 0 0;margin-top:6px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;">
+              <span style="font-weight:700;font-size:13px;color:var(--green);">🥈 #2</span>
+            </div>
+          </div>
+          <!-- 1st Place -->
+          <div style="flex:1;text-align:center;">
+            <div style="width:52px;height:52px;border-radius:50%;background:var(--amber-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-weight:700;color:var(--amber);font-size:20px;">PK</div>
+            <div style="font-weight:700;font-size:13px;">Priya K.</div>
+            <div style="font-size:10px;color:var(--text3);">198 tasks</div>
+            <div style="width:100%;height:120px;background:var(--amber-bg);border-radius:12px 12px 0 0;margin-top:4px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;">
+              <span style="font-weight:700;font-size:16px;color:var(--amber);">🥇 #1</span>
+            </div>
+          </div>
+          <!-- 3rd Place -->
+          <div style="flex:1;text-align:center;">
+            <div style="width:44px;height:44px;border-radius:50%;background:var(--purple-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-weight:700;color:var(--purple);font-size:16px;">RJ</div>
+            <div style="font-weight:600;font-size:12px;">Rohit J.</div>
+            <div style="font-size:10px;color:var(--text3);">145 tasks</div>
+            <div style="width:100%;height:70px;background:var(--purple-bg);border-radius:12px 12px 0 0;margin-top:8px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;">
+              <span style="font-weight:700;font-size:13px;color:var(--purple);">🥉 #3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Full Rankings List -->
+        <div class="section-hdr"><h3>All Agents</h3></div>
+        <div class="list-item" style="background:var(--amber-bg);border-left:3px solid var(--amber);">
+          <div style="width:28px;font-weight:800;font-size:14px;color:var(--amber);">#4</div>
+          <div class="list-icon green" style="width:36px;height:36px;font-size:14px;">SV</div>
+          <div class="list-body"><div style="font-weight:600;font-size:14px;">Suresh V.</div><div style="font-size:11px;color:var(--text3);">Zone 2 · 140 tasks · 4.9⭐</div></div>
+          <span class="badge badge-green">₹3,800</span>
+        </div>
+        <div class="list-item">
+          <div style="width:28px;font-weight:800;font-size:14px;color:var(--text3);">#5</div>
+          <div class="list-icon amber" style="width:36px;height:36px;font-size:14px;">MG</div>
+          <div class="list-body"><div style="font-weight:600;font-size:14px;">Meena G.</div><div style="font-size:11px;color:var(--text3);">Zone 1 · 138 tasks · 4.8⭐</div></div>
+          <span class="badge badge-amber">₹3,450</span>
+        </div>
+        <div class="list-item">
+          <div style="width:28px;font-weight:800;font-size:14px;color:var(--text3);">#6</div>
+          <div class="list-icon green" style="width:36px;height:36px;font-size:14px;">AK</div>
+          <div class="list-body"><div style="font-weight:600;font-size:14px;">Arun K.</div><div style="font-size:11px;color:var(--text3);">Zone 3 · 136 tasks · 4.7⭐</div></div>
+          <span class="badge badge-amber">₹3,300</span>
+        </div>
+        <div class="list-item" style="border-left:3px solid var(--amber);background:var(--amber-bg);">
+          <div style="width:28px;font-weight:800;font-size:14px;color:var(--amber);">#7</div>
+          <div class="list-icon amber" style="width:36px;height:36px;font-size:14px;background:var(--amber);color:#fff;">SV</div>
+          <div class="list-body"><div style="font-weight:600;font-size:14px;">Sunil Verma <span style="font-size:10px;color:var(--amber);font-weight:600;">(You)</span></div><div style="font-size:11px;color:var(--text3);">Zone 4 · 134 tasks · 4.8⭐</div></div>
+          <span class="badge badge-amber">₹3,240</span>
+        </div>
+        <div class="list-item">
+          <div style="width:28px;font-weight:800;font-size:14px;color:var(--text3);">#8</div>
+          <div class="list-icon green" style="width:36px;height:36px;font-size:14px;">DL</div>
+          <div class="list-body"><div style="font-weight:600;font-size:14px;">Deepak L.</div><div style="font-size:11px;color:var(--text3);">Zone 5 · 128 tasks · 4.6⭐</div></div>
+          <span class="badge badge-green">₹3,100</span>
+        </div>
+        <div class="list-item">
+          <div style="width:28px;font-weight:800;font-size:14px;color:var(--text3);">#9</div>
+          <div class="list-icon green" style="width:36px;height:36px;font-size:14px;">SN</div>
+          <div class="list-body"><div style="font-weight:600;font-size:14px;">Sunita N.</div><div style="font-size:11px;color:var(--text3);">Zone 1 · 120 tasks · 4.7⭐</div></div>
+          <span class="badge badge-blue">₹2,850</span>
+        </div>
+        <div class="list-item">
+          <div style="width:28px;font-weight:800;font-size:14px;color:var(--text3);">#10</div>
+          <div class="list-icon green" style="width:36px;height:36px;font-size:14px;">VP</div>
+          <div class="list-body"><div style="font-weight:600;font-size:14px;">Vijay P.</div><div style="font-size:11px;color:var(--text3);">Zone 3 · 115 tasks · 4.5⭐</div></div>
+          <span class="badge badge-blue">₹2,640</span>
+        </div>
+      </div>
+    </div>

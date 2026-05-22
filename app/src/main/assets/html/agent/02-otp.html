@@ -1,0 +1,27 @@
+    <!-- AGENT: OTP -->
+    <div class="screen" id="screen-otp-agent">
+      <div class="top-nav" style="background:var(--amber);">
+        <button class="back-btn" onclick="showScreen('screen-login-agent')" aria-label="Go back"><i class="ti ti-arrow-left"></i></button>
+        <h2>Verify OTP</h2>
+      </div>
+      <div class="scroll-body" style="background:var(--surface);">
+        <div style="padding:40px 24px; text-align:center;">
+          <div style="width:60px; height:60px; background:var(--amber-bg); border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px; color:var(--amber);">
+            <i class="ti ti-message-dots"></i>
+          </div>
+          <h2 style="font-size:22px; font-weight:700;">Agent Verification</h2>
+          <p style="font-size:14px; color:var(--text3); margin-top:6px;">Enter your secure agent PIN</p>
+        </div>
+        <div style="padding:0 24px; text-align:center;">
+          <form onsubmit="verifyOTP('agent');return false" style="margin:0">
+          <div style="display:flex; gap:12px; justify-content:center;">
+            <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-input" oninput="otpNext(this,'otpa2')" id="otpa1" name="otp1" aria-label="Agent PIN digit 1" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
+            <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-input" oninput="otpNext(this,'otpa3')" id="otpa2" name="otp2" aria-label="Agent PIN digit 2" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
+            <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-input" oninput="otpNext(this,'otpa4')" id="otpa3" name="otp3" aria-label="Agent PIN digit 3" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
+            <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-input" id="otpa4" name="otp4" aria-label="Agent PIN digit 4" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
+          </div>
+          <button class="btn" style="background:var(--amber); color:#fff; margin:30px 0 0;" type="submit">Login to Terminal</button>
+          </form>
+        </div>
+      </div>
+    </div>

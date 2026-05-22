@@ -2,592 +2,95 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>RupeeFast — Digital Micro Lending</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.19.0/fonts/tabler-icons.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.19.0/tabler-icons.min.css" integrity="sha384-hs5SINUk7GPohxRis+rS7grpSWEbtOIJ3sRoseBKg3CDPIKpG55RfSenbvA6ALOt" crossorigin="anonymous">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0A1E3D" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0A1E3D" media="(prefers-color-scheme: dark)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RupeeFast">
+  <meta name="application-name" content="RupeeFast">
   <link rel="stylesheet" href="style.css">
-  <script>
-    // Android back button handler
-    function handleAndroidBack() {
-      const activeScreen = document.querySelector('.screen.active');
-      if (activeScreen && activeScreen.id !== 'screen-home') {
-        const backBtn = activeScreen.querySelector('.back-btn');
-        if (backBtn) { backBtn.click(); return true; }
-      }
-      return false;
-    }
-  </script>
 </head>
 <body>
 <div class="phone-wrap">
   <div class="app" id="mainApp">
 
+    <!-- TOAST CONTAINER (Shared) -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- LOADING OVERLAY (Shared) -->
+    <div class="loading-overlay" id="loading-overlay">
+      <div class="spinner"></div>
+      <p id="loading-text">Loading...</p>
+    </div>
+
     <!-- SUCCESS OVERLAY (Shared) -->
     <div class="success-overlay" id="success-overlay">
       <div class="success-icon"><i class="ti ti-check"></i></div>
       <h2 id="so-title">Success</h2>
-      <p id="so-msg"></p>
+      <p id="so-msg" style="margin-bottom:8px;"></p>
       <button class="btn btn-primary" onclick="closeSuccess()">Continue</button>
     </div>
 
     <!-- ════════════════════════════════════════
          SCREEN: HOME (ROLE SELECT)
     ════════════════════════════════════════ -->
-    <div class="screen active" id="screen-home" style="background:var(--primary); justify-content:center; align-items:center;">
-      <div style="text-align:center; padding:40px;">
-        <div style="width:70px; height:70px; background:rgba(255,255,255,0.15); border-radius:20px; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:36px; color:#fff;">
+    <div class="screen active" id="screen-home" style="background:linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 40%, var(--primary-light) 100%); justify-content:center; align-items:center;">
+      <!-- Animated Floating Particles -->
+      <div class="floating-particles">
+        <div class="floating-particle"></div>
+        <div class="floating-particle"></div>
+        <div class="floating-particle"></div>
+        <div class="floating-particle"></div>
+        <div class="floating-particle"></div>
+      </div>
+
+      <!-- Glow Orbs -->
+      <div style="position:absolute; top:-80px; right:-80px; width:240px; height:240px; background:radial-gradient(circle, rgba(37,98,168,0.2) 0%, transparent 70%); border-radius:50%; pointer-events:none; z-index:0;"></div>
+      <div style="position:absolute; bottom:-60px; left:-60px; width:200px; height:200px; background:radial-gradient(circle, rgba(79, 136, 203, 0.15) 0%, transparent 70%); border-radius:50%; pointer-events:none; z-index:0;"></div>
+
+      <div style="text-align:center; padding:40px; position:relative; z-index:1; animation:staggerFadeIn 0.6s ease;">
+        <div style="width:72px; height:72px; background:rgba(255,255,255,0.12); border-radius:22px; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:34px; color:#fff; backdrop-filter:blur(8px); box-shadow:0 4px 16px rgba(0,0,0,0.1); transition:all 0.3s ease;">
           <i class="ti ti-cash"></i>
         </div>
-        <h1 style="font-size:32px; font-weight:800; color:#fff; letter-spacing:-0.8px;">RupeeFast</h1>
-        <p style="color:rgba(255,255,255,0.7); margin-top:8px; font-size:15px; line-height:1.6;">Institutional grade micro-lending.<br>Instant. Ethical. Secure.</p>
-        
-        <div style="margin-top:40px; display:flex; flex-direction:column; gap:12px; width:280px;">
-          <button class="btn" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; margin:0;" onclick="showScreen('screen-login-borrower')">
+        <h1 style="font-family:'Plus Jakarta Sans',sans-serif; font-size:34px; font-weight:800; color:#fff; letter-spacing:-1px; line-height:1.1;">RupeeFast</h1>
+        <p style="color:rgba(255,255,255,0.65); margin-top:10px; font-size:15px; line-height:1.6; font-weight:400; animation:staggerFadeIn 0.6s ease 0.15s both;">Institutional grade micro-lending.<br>Instant. Ethical. Secure.</p>
+
+        <div style="margin-top:44px; display:flex; flex-direction:column; gap:12px; width:280px;">
+          <button class="btn ripple-btn" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; margin:0; padding:16px; border-radius:14px; font-size:14px; font-weight:600; backdrop-filter:blur(8px); transition:all 0.25s ease; animation:staggerFadeIn 0.6s ease 0.3s both;" onclick="showScreen('screen-login-borrower')">
             <i class="ti ti-user"></i> &nbsp;Borrow Money
           </button>
-          <button class="btn" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; margin:0;" onclick="showScreen('screen-login-investor')">
+          <button class="btn ripple-btn" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; margin:0; padding:16px; border-radius:14px; font-size:14px; font-weight:600; backdrop-filter:blur(8px); transition:all 0.25s ease; animation:staggerFadeIn 0.6s ease 0.45s both;" onclick="showScreen('screen-login-investor')">
             <i class="ti ti-trending-up"></i> &nbsp;Invest & Earn
           </button>
-          <button class="btn" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; margin:0;" onclick="showScreen('screen-login-agent')">
+          <button class="btn ripple-btn" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; margin:0; padding:16px; border-radius:14px; font-size:14px; font-weight:600; backdrop-filter:blur(8px); transition:all 0.25s ease; animation:staggerFadeIn 0.6s ease 0.6s both;" onclick="showScreen('screen-login-agent')">
             <i class="ti ti-map-pin"></i> &nbsp;Field Agent
           </button>
         </div>
-        <p style="margin-top:30px; font-size:11px; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px;">RBI Registered NBFC Partner</p>
-      </div>
-    </div>
-
-    <!-- ════════════════════════════════════════
-         BORROWER: LOGIN
-    ════════════════════════════════════════ -->
-    <div class="screen" id="screen-login-borrower">
-      <div class="top-nav">
-        <button class="back-btn" onclick="showScreen('screen-home')"><i class="ti ti-arrow-left"></i></button>
-        <h2>Borrower Login</h2>
-      </div>
-      <div class="scroll-body" style="background:var(--surface);">
-        <div style="padding:40px 24px; text-align:center;">
-          <div style="width:60px; height:60px; background:var(--primary-bg); border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px; color:var(--primary);">
-            <i class="ti ti-user"></i>
-          </div>
-          <h2 style="font-size:22px; font-weight:700;">Welcome to RupeeFast</h2>
-          <p style="font-size:14px; color:var(--text3); margin-top:6px;">Enter your mobile number to get started</p>
+        <div style="margin-top:36px; display:flex; align-items:center; gap:8px; justify-content:center; animation:staggerFadeIn 0.6s ease 0.75s both;">
+          <span style="width:6px; height:6px; background:#4ADE80; border-radius:50%; display:inline-block; animation:pulse 2s ease-in-out infinite;"></span>
+          <p style="font-size:11px; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:1px; font-weight:600;">RBI Registered NBFC Partner</p>
         </div>
-        <div style="padding:0 24px;">
-          <div class="card" style="margin:0; padding:12px; border-radius:var(--radius-sm);">
-            <label style="display:block; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; margin-bottom:8px;">Mobile Number</label>
-            <div style="display:flex; gap:10px; align-items:center;">
-              <div style="font-size:15px; font-weight:700; color:var(--text); border-right:1px solid var(--border); padding-right:10px;">🇮🇳 +91</div>
-              <input type="tel" placeholder="9876543210" maxlength="10" style="flex:1; border:none; outline:none; font-size:16px; font-weight:600; letter-spacing:1px;">
-            </div>
-          </div>
-          <button class="btn btn-primary" style="margin:24px 0 0;" onclick="doLogin('borrower')">Send OTP</button>
-          <p style="text-align:center; font-size:12px; color:var(--text3); margin-top:20px;">By continuing, you agree to our <span style="color:var(--primary); font-weight:600;">Terms & Privacy</span></p>
-        </div>
-      </div>
-    </div>
-
-    <!-- BORROWER: OTP -->
-    <div class="screen" id="screen-otp-borrower">
-      <div class="top-nav">
-        <button class="back-btn" onclick="showScreen('screen-login-b')"><i class="ti ti-arrow-left"></i></button>
-        <h2>Verify OTP</h2>
-      </div>
-      <div class="scroll-body" style="background:var(--surface);">
-        <div style="padding:40px 24px; text-align:center;">
-          <div style="width:60px; height:60px; background:var(--green-bg); border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px; color:var(--green);">
-            <i class="ti ti-message-dots"></i>
-          </div>
-          <h2 style="font-size:22px; font-weight:700;">Verification</h2>
-          <p style="font-size:14px; color:var(--text3); margin-top:6px;">We've sent a code to your mobile</p>
-        </div>
-        <div style="padding:0 24px; text-align:center;">
-          <div style="display:flex; gap:12px; justify-content:center;">
-            <input type="number" maxlength="1" class="otp-input" oninput="otpNext(this,'otp2')" id="otp1" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
-            <input type="number" maxlength="1" class="otp-input" oninput="otpNext(this,'otp3')" id="otp2" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
-            <input type="number" maxlength="1" class="otp-input" oninput="otpNext(this,'otp4')" id="otp3" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
-            <input type="number" maxlength="1" class="otp-input" id="otp4" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
-          </div>
-          <button class="btn btn-primary" style="margin:30px 0 0;" onclick="verifyOTP('borrower')">Verify & Continue</button>
-          <p style="font-size:13px; color:var(--text3); margin-top:24px;">Didn't receive code? <span style="color:var(--primary); font-weight:600;">Resend in 30s</span></p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ════════════════════════════════════════
-         BORROWER: HOME DASHBOARD
-    ════════════════════════════════════════ -->
-    <div class="screen" id="screen-b-home">
-      <div class="top-nav" style="background:var(--primary); border-bottom:none;">
-        <div style="flex:1;">
-          <p style="font-size:11px; opacity:0.7; margin-bottom:2px;">Welcome back,</p>
-          <h2 class="b-name" style="font-size:18px; font-weight:700;">Ramesh Kumar</h2>
-        </div>
-        <div style="display:flex; gap:14px; align-items:center;">
-          <i class="ti ti-bell" style="font-size:22px; cursor:pointer;" onclick="showScreen('screen-b-notif')"></i>
-          <div style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700;">RK</div>
-        </div>
-      </div>
-      <div class="scroll-body">
-        <div class="hero-card">
-          <p style="font-size:11px; opacity:0.8; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Active Loan Balance</p>
-          <div style="display:flex; align-items:baseline; gap:4px; margin-top:4px;">
-            <span style="font-size:16px; font-weight:600;">₹</span>
-            <span style="font-size:32px; font-weight:800; letter-spacing:-0.5px;">8,700</span>
-          </div>
-          <div class="progress-bar" style="margin-top:20px; background:rgba(255,255,255,0.2);">
-            <div class="progress-fill" style="width:32%; background:#4ADE80;"></div>
-          </div>
-          <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:11px; opacity:0.8;">
-            <span>₹4,300 repaid</span>
-            <span>68% remaining</span>
-          </div>
-          <button class="btn" style="background:#fff; color:var(--primary); margin:20px 0 0; padding:12px; font-size:13px; font-weight:700;" onclick="showScreen('screen-b-pay')">Pay ₹120 Today</button>
-        </div>
-
-        <div class="metric-grid">
-          <div class="metric" onclick="showScreen('screen-b-score')">
-            <div class="label">Trust Score</div>
-            <div class="value green">74 <span style="font-size:12px; color:var(--text3); font-weight:400;">/ 100</span></div>
-            <div class="sub">Level: Bronze 🥉</div>
-          </div>
-          <div class="metric" onclick="showScreen('screen-b-loyalty')">
-            <div class="label">Daily Limit</div>
-            <div class="value blue">₹12,000</div>
-            <div class="sub">Next: Silver 🥈</div>
-          </div>
-        </div>
-
-        <div class="section-hdr"><h3>Quick Actions</h3></div>
-        <div class="card" style="padding:8px 0;">
-          <div style="display:grid; grid-template-columns:repeat(4,1fr);">
-            <div class="nav-item" onclick="showScreen('screen-b-apply')">
-              <div style="width:48px; height:48px; border-radius:14px; background:var(--primary-bg); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:22px;"><i class="ti ti-plus"></i></div>
-              <span>Apply</span>
-            </div>
-            <div class="nav-item" onclick="showScreen('screen-b-history')">
-              <div style="width:48px; height:48px; border-radius:14px; background:var(--green-bg); color:var(--green); display:flex; align-items:center; justify-content:center; font-size:22px;"><i class="ti ti-history"></i></div>
-              <span>History</span>
-            </div>
-            <div class="nav-item" onclick="showScreen('screen-b-help')">
-              <div style="width:48px; height:48px; border-radius:14px; background:var(--amber-bg); color:var(--amber); display:flex; align-items:center; justify-content:center; font-size:22px;"><i class="ti ti-message-dots"></i></div>
-              <span>Chat</span>
-            </div>
-            <div class="nav-item" onclick="showScreen('screen-b-refer')">
-              <div style="width:48px; height:48px; border-radius:14px; background:var(--purple-bg); color:var(--purple); display:flex; align-items:center; justify-content:center; font-size:22px;"><i class="ti ti-share"></i></div>
-              <span>Refer</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-hdr"><h3>Upcoming Collections</h3></div>
-        <div id="home-schedule-list">
-          <!-- Populated by app.js -->
-        </div>
-      </div>
-
-      <div class="bottom-nav g4">
-        <button class="nav-item active" onclick="showBTab('screen-b-home',this)"><i class="ti ti-smart-home"></i><span>Home</span></button>
-        <button class="nav-item" onclick="showBTab('screen-b-apply',this)"><i class="ti ti-circle-plus"></i><span>Apply</span></button>
-        <button class="nav-item" onclick="showBTab('screen-b-schedule',this)"><i class="ti ti-calendar"></i><span>Schedule</span></button>
-        <button class="nav-item" onclick="showBTab('screen-b-profile',this)"><i class="ti ti-user-circle"></i><span>Account</span></button>
-      </div>
-    </div>
-
-    <!-- ════════════════════════════════════════
-         BORROWER: APPLY LOAN
-    ════════════════════════════════════════ -->
-    <div class="screen" id="screen-b-apply">
-      <div class="top-nav">
-        <button class="back-btn" onclick="showBTab('screen-b-home',null)"><i class="ti ti-arrow-left"></i></button>
-        <h2>Apply for Loan</h2>
-      </div>
-      <div class="scroll-body">
-        <div class="card card-tint-blue" style="margin-top:12px; border:none; text-align:center; padding:24px;">
-          <p style="font-size:12px; color:var(--primary); font-weight:600; text-transform:uppercase;">Maximum Eligibility</p>
-          <h2 style="font-size:32px; font-weight:800; color:var(--primary); margin-top:4px;">₹12,000</h2>
-          <p style="font-size:11px; color:var(--text2); margin-top:4px;">Based on your Trust Score of 74</p>
-        </div>
-
-        <div class="card" style="margin-top:12px;">
-          <div style="display:flex; justify-content:space-between; align-items:baseline;">
-            <h3 style="font-size:14px; color:var(--text);">Loan Amount</h3>
-            <span id="amt-val" style="font-size:22px; font-weight:800; color:var(--primary);">₹8,000</span>
-          </div>
-          <input type="range" min="2000" max="12000" step="500" value="8000" id="loan-range" oninput="calcLoan(this.value)" style="width:100%; margin-top:20px;">
-          <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:11px; color:var(--text3); font-weight:600;">
-            <span>₹2,000</span>
-            <span>₹12,000</span>
-          </div>
-        </div>
-
-        <div class="section-hdr"><h3>Select Purpose</h3></div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:0 12px;">
-          <button class="purpose-btn" onclick="selPurpose(0)" style="padding:16px; border-radius:12px; border:1.5px solid var(--primary); background:var(--primary-bg); color:var(--primary); font-weight:700;">Business Expansion</button>
-          <button class="purpose-btn" onclick="selPurpose(1)" style="padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--surface); color:var(--text2); font-weight:600;">Emergency Cash</button>
-        </div>
-
-        <div class="section-hdr"><h3>Repayment Plan</h3></div>
-        <div class="card plan-card selected" onclick="selPlan(0)" style="display:flex; align-items:center; gap:14px; cursor:pointer;">
-          <div class="check" style="width:22px; height:22px; border-radius:50%; border:2px solid var(--primary); background:var(--primary); display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px;"><i class="ti ti-check"></i></div>
-          <div style="flex:1;">
-            <div style="font-weight:700; color:var(--text);">Daily Micro-Payments</div>
-            <div style="font-size:12px; color:var(--text3); margin-top:2px;">₹120 / day for 100 days</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-weight:700; color:var(--green);">₹12,000</div>
-            <div style="font-size:11px; color:var(--text3);">Total Pay</div>
-          </div>
-        </div>
-
-        <button class="btn btn-primary" style="margin:30px 12px 20px;" onclick="showScreen('screen-b-kyc')">Proceed to Verification →</button>
-      </div>
-      <div class="bottom-nav g4">
-        <button class="nav-item" onclick="showBTab('screen-b-home',this)"><i class="ti ti-smart-home"></i><span>Home</span></button>
-        <button class="nav-item active" onclick="showBTab('screen-b-apply',this)"><i class="ti ti-circle-plus"></i><span>Apply</span></button>
-        <button class="nav-item" onclick="showBTab('screen-b-schedule',this)"><i class="ti ti-calendar"></i><span>Schedule</span></button>
-        <button class="nav-item" onclick="showBTab('screen-b-profile',this)"><i class="ti ti-user-circle"></i><span>Account</span></button>
-      </div>
-    </div>
-
-    <!-- BORROWER: AI TRUST SCORE / KYC -->
-    <div class="screen" id="screen-b-kyc">
-      <div class="top-nav"><button class="back-btn" onclick="showScreen('screen-b-apply')"><i class="ti ti-arrow-left"></i></button><h2>Trust Score Engine</h2></div>
-      <div class="scroll-body" style="background:#0F172A;">
-        <div id="screen-b-ai-score" style="padding:40px 24px; text-align:center;">
-          <div style="position:relative; width:160px; height:160px; margin:0 auto 30px;">
-             <svg style="width:160px; height:160px; transform:rotate(-90deg);">
-                <circle cx="80" cy="80" r="70" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="12"></circle>
-                <circle id="ai-circle" cx="80" cy="80" r="70" fill="none" stroke="var(--primary-light)" stroke-width="12" stroke-dasharray="440" stroke-dashoffset="440" style="transition: stroke-dashoffset 0.8s ease;"></circle>
-             </svg>
-             <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                <span id="ai-pct" style="font-size:36px; font-weight:800; color:#fff;">0%</span>
-                <span style="font-size:11px; color:rgba(255,255,255,0.5); text-transform:uppercase; font-weight:700; letter-spacing:1px;">Analysing</span>
-             </div>
-          </div>
-          
-          <div style="background:rgba(255,255,255,0.05); border-radius:14px; padding:16px; text-align:left;">
-            <div id="ai-step-lbl" style="font-size:14px; color:#fff; font-weight:600; margin-bottom:12px;">Initializing TrustEngine...</div>
-            <div class="progress-bar" style="background:rgba(255,255,255,0.1); height:4px;"><div id="ai-prog" class="progress-fill" style="width:0%; background:var(--primary-light);"></div></div>
-            
-            <div id="ai-checks" style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
-              <!-- Checks will appear here -->
-            </div>
-          </div>
-
-          <button id="ai-score-done" class="btn btn-primary" style="display:none; margin-top:30px; background:#fff; color:#0F172A;" onclick="submitLoan()">Finalise Application</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- BORROWER: APPLICATION SUCCESS -->
-    <div class="screen" id="screen-b-success">
-      <div class="scroll-body" style="background:var(--primary); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px;">
-        <div style="width:80px; height:80px; background:rgba(255,255,255,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:40px; color:#fff; margin-bottom:24px;">
-          <i class="ti ti-confetti"></i>
-        </div>
-        <h2 style="font-size:28px; font-weight:800; color:#fff; letter-spacing:-0.5px;">Congratulations!</h2>
-        <p style="color:rgba(255,255,255,0.8); margin-top:10px; font-size:15px; line-height:1.6;">Your loan of ₹8,000 has been approved and disbursed to your primary UPI ID.</p>
-        
-        <div class="card" style="margin-top:40px; background:rgba(255,255,255,0.1); border:none; width:100%;">
-          <div style="display:flex; justify-content:space-between; color:#fff; font-size:13px; opacity:0.8;">
-            <span>Disbursed Amount</span>
-            <span>₹7,200</span>
-          </div>
-          <div style="display:flex; justify-content:space-between; color:#fff; font-size:13px; opacity:0.8; margin-top:8px;">
-            <span>Daily EMI</span>
-            <span>₹120</span>
-          </div>
-        </div>
-
-        <button class="btn" style="background:#fff; color:var(--primary); margin-top:40px;" onclick="showScreen('screen-b-home')">Go to Dashboard</button>
-      </div>
-    </div>
-
-    <!-- ════════════════════════════════════════
-         INVESTOR: LOGIN
-    ════════════════════════════════════════ -->
-    <div class="screen" id="screen-login-investor">
-      <div class="top-nav">
-        <button class="back-btn" onclick="showScreen('screen-home')"><i class="ti ti-arrow-left"></i></button>
-        <h2>Investor Login</h2>
-      </div>
-      <div class="scroll-body" style="background:var(--surface);">
-        <div style="padding:40px 24px; text-align:center;">
-          <div style="width:60px; height:60px; background:var(--green-bg); border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px; color:var(--green);">
-            <i class="ti ti-trending-up"></i>
-          </div>
-          <h2 style="font-size:22px; font-weight:700;">Grow your Capital</h2>
-          <p style="font-size:14px; color:var(--text3); margin-top:6px;">Join the RupeeFast P2P Marketplace</p>
-        </div>
-        <div style="padding:0 24px;">
-          <div class="card" style="margin:0; padding:12px; border-radius:var(--radius-sm);">
-            <label style="display:block; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; margin-bottom:8px;">Mobile Number</label>
-            <div style="display:flex; gap:10px; align-items:center;">
-              <div style="font-size:15px; font-weight:700; color:var(--text); border-right:1px solid var(--border); padding-right:10px;">🇮🇳 +91</div>
-              <input type="tel" placeholder="9876543210" maxlength="10" style="flex:1; border:none; outline:none; font-size:16px; font-weight:600; letter-spacing:1px;">
-            </div>
-          </div>
-          <button class="btn btn-green" style="margin:24px 0 0;" onclick="doLogin('investor')">Send OTP</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- INVESTOR: OTP -->
-    <div class="screen" id="screen-otp-investor">
-      <div class="top-nav">
-        <button class="back-btn" onclick="showScreen('screen-login-i')"><i class="ti ti-arrow-left"></i></button>
-        <h2>Verify OTP</h2>
-      </div>
-      <div class="scroll-body" style="background:var(--surface);">
-        <div style="padding:40px 24px; text-align:center;">
-          <div style="width:60px; height:60px; background:var(--green-bg); border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px; color:var(--green);">
-            <i class="ti ti-message-dots"></i>
-          </div>
-          <h2 style="font-size:22px; font-weight:700;">Verification</h2>
-          <p style="font-size:14px; color:var(--text3); margin-top:6px;">We've sent a code to your mobile</p>
-        </div>
-        <div style="padding:0 24px; text-align:center;">
-          <div style="display:flex; gap:12px; justify-content:center;">
-            <input type="number" maxlength="1" class="otp-input" oninput="otpNext(this,'otpi2')" id="otpi1" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
-            <input type="number" maxlength="1" class="otp-input" oninput="otpNext(this,'otpi3')" id="otpi2" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
-            <input type="number" maxlength="1" class="otp-input" oninput="otpNext(this,'otpi4')" id="otpi3" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
-            <input type="number" maxlength="1" class="otp-input" id="otpi4" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
-          </div>
-          <button class="btn btn-green" style="margin:30px 0 0;" onclick="verifyOTP('investor')">Verify & Continue</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ════════════════════════════════════════
-         INVESTOR: HOME DASHBOARD
-    ════════════════════════════════════════ -->
-    <div class="screen" id="screen-i-home">
-      <div class="top-nav" style="background:var(--green); border-bottom:none;">
-        <div style="flex:1;">
-          <p style="font-size:11px; opacity:0.7; margin-bottom:2px;">Portfolio Value</p>
-          <h2 class="i-name" style="font-size:18px; font-weight:700;">₹45,200</h2>
-        </div>
-        <div style="display:flex; gap:14px; align-items:center;">
-          <i class="ti ti-bell" style="font-size:22px;"></i>
-          <div style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700;">AS</div>
-        </div>
-      </div>
-      <div class="scroll-body">
-        <div class="hero-card" style="background:linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);">
-          <p style="font-size:11px; opacity:0.8; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Interest Earned (May)</p>
-          <div style="display:flex; align-items:baseline; gap:4px; margin-top:4px;">
-            <span style="font-size:16px; font-weight:600;">₹</span>
-            <span style="font-size:32px; font-weight:800; letter-spacing:-0.5px;">1,455</span>
-          </div>
-          <div style="display:flex; gap:8px; margin-top:20px;">
-            <button class="btn" style="flex:1; background:#fff; color:var(--green); margin:0; padding:10px; font-size:12px; font-weight:700;" onclick="showScreen('screen-i-invest')">Invest More</button>
-            <button class="btn" style="flex:1; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:#fff; margin:0; padding:10px; font-size:12px; font-weight:700;">Withdraw</button>
-          </div>
-        </div>
-
-        <div class="metric-grid">
-          <div class="metric">
-            <div class="label">Annual ROI</div>
-            <div class="value green">18.4%</div>
-            <div class="sub">3.2% higher than Avg.</div>
-          </div>
-          <div class="metric">
-            <div class="label">Live Loans</div>
-            <div class="value blue">92</div>
-            <div class="sub">Diversified portfolio</div>
-          </div>
-        </div>
-
-        <div class="section-hdr"><h3>Active Portfolios</h3></div>
-        <div class="card card-tint-green" style="margin-top:8px;">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <div style="font-weight:700; color:var(--green);">SAFE Bucket</div>
-              <div style="font-size:12px; color:var(--text3); margin-top:2px;">₹32,000 invested</div>
-            </div>
-            <div style="text-align:right;">
-              <div style="font-weight:700; color:var(--text);">14% ROI</div>
-              <div style="font-size:11px; color:var(--green); font-weight:600;">0.2% Default</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card card-tint-amber" style="margin-top:10px;">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <div style="font-weight:700; color:var(--amber);">MODERATE Bucket</div>
-              <div style="font-size:12px; color:var(--text3); margin-top:2px;">₹13,200 invested</div>
-            </div>
-            <div style="text-align:right;">
-              <div style="font-weight:700; color:var(--text);">22% ROI</div>
-              <div style="font-size:11px; color:var(--amber); font-weight:600;">1.5% Default</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="bottom-nav g4">
-        <button class="nav-item active" onclick="showITab('screen-i-home',this)"><i class="ti ti-layout-dashboard"></i><span>Overview</span></button>
-        <button class="nav-item" onclick="showITab('screen-i-invest',this)"><i class="ti ti-plus"></i><span>Invest</span></button>
-        <button class="nav-item" onclick="showITab('screen-i-loans',this)"><i class="ti ti-users"></i><span>Borrowers</span></button>
-        <button class="nav-item" onclick="showITab('screen-i-profile',this)"><i class="ti ti-user"></i><span>Profile</span></button>
-      </div>
-    </div>
-
-    <!-- INVESTOR: INVEST SCREEN -->
-    <div class="screen" id="screen-i-invest">
-      <div class="top-nav" style="background:var(--green);">
-        <button class="back-btn" onclick="showITab('screen-i-home',null)"><i class="ti ti-arrow-left"></i></button>
-        <h2>Deploy Capital</h2>
-      </div>
-      <div class="scroll-body">
-        <div class="card" style="margin-top:12px;">
-          <div style="display:flex; justify-content:space-between; align-items:baseline;">
-            <h3 style="font-size:14px; color:var(--text);">Investment Amount</h3>
-            <span id="inv-amt-val" style="font-size:22px; font-weight:800; color:var(--green);">₹10,000</span>
-          </div>
-          <input type="range" min="5000" max="100000" step="5000" value="10000" oninput="calcInvest(this.value)" style="width:100%; margin-top:20px; accent-color:var(--green);">
-        </div>
-
-        <div class="section-hdr"><h3>Choose Risk Strategy</h3></div>
-        <div id="rb-safe" class="card selected" onclick="selRisk('safe')" style="margin-top:8px; border-left:4px solid var(--green); cursor:pointer;">
-          <div style="font-weight:700; color:var(--green); font-size:15px;">SAFE (14% ROI)</div>
-          <p style="font-size:12px; color:var(--text3); margin-top:4px;">Lends only to "Silver" level borrowers with Trust Score > 85.</p>
-        </div>
-
-        <div id="rb-mod" class="card" onclick="selRisk('mod')" style="margin-top:10px; border-left:4px solid var(--amber); cursor:pointer;">
-          <div style="font-weight:700; color:var(--amber); font-size:15px;">BALANCED (22% ROI)</div>
-          <p style="font-size:12px; color:var(--text3); margin-top:4px;">Lends to "Bronze" & "Silver" level borrowers with Trust Score > 70.</p>
-        </div>
-
-        <div class="card" style="margin-top:20px; background:var(--green-bg); border:none;">
-          <div style="display:flex; gap:10px; align-items:center;">
-            <i class="ti ti-shield-check" style="font-size:24px; color:var(--green);"></i>
-            <p style="font-size:12px; color:var(--green); font-weight:600; line-height:1.4;">RupeeFast Reserve Fund covers up to 100% of the principal for SAFE bucket investments.</p>
-          </div>
-        </div>
-
-        <button class="btn btn-green" style="margin:30px 12px 20px;" onclick="showSuccess('Deployment Scheduled','₹10,000 will be deployed across 20 verified borrowers by tomorrow 9 AM.')">Confirm Investment</button>
-      </div>
-    </div>
-
-    <!-- ════════════════════════════════════════
-         AGENT: LOGIN
-    ════════════════════════════════════════ -->
-    <div class="screen" id="screen-login-agent">
-      <div class="top-nav" style="background:var(--amber);">
-        <button class="back-btn" onclick="showScreen('screen-home')"><i class="ti ti-arrow-left"></i></button>
-        <h2>Agent Portal</h2>
-      </div>
-      <div class="scroll-body" style="background:var(--surface);">
-        <div style="padding:40px 24px; text-align:center;">
-          <div style="width:60px; height:60px; background:var(--amber-bg); border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px; color:var(--amber);">
-            <i class="ti ti-map-pin"></i>
-          </div>
-          <h2 style="font-size:22px; font-weight:700;">Field Agent Access</h2>
-          <p style="font-size:14px; color:var(--text3); margin-top:6px;">Manage collections and verifications</p>
-        </div>
-        <div style="padding:0 24px;">
-          <div class="card" style="margin:0; padding:12px; border-radius:var(--radius-sm);">
-            <label style="display:block; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; margin-bottom:8px;">Agent ID / Mobile</label>
-            <input type="tel" placeholder="Enter mobile number" maxlength="10" style="width:100%; border:none; outline:none; font-size:16px; font-weight:600; letter-spacing:1px;">
-          </div>
-          <button class="btn" style="background:var(--amber); color:#fff; margin:24px 0 0;" onclick="doLogin('agent')">Request Access</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- AGENT: OTP -->
-    <div class="screen" id="screen-otp-agent">
-      <div class="top-nav" style="background:var(--amber);">
-        <button class="back-btn" onclick="showScreen('screen-login-agent')"><i class="ti ti-arrow-left"></i></button>
-        <h2>Verify OTP</h2>
-      </div>
-      <div class="scroll-body" style="background:var(--surface);">
-        <div style="padding:40px 24px; text-align:center;">
-          <div style="width:60px; height:60px; background:var(--amber-bg); border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px; color:var(--amber);">
-            <i class="ti ti-message-dots"></i>
-          </div>
-          <h2 style="font-size:22px; font-weight:700;">Agent Verification</h2>
-          <p style="font-size:14px; color:var(--text3); margin-top:6px;">Enter your secure agent PIN</p>
-        </div>
-        <div style="padding:0 24px; text-align:center;">
-          <div style="display:flex; gap:12px; justify-content:center;">
-            <input type="password" maxlength="1" class="otp-input" oninput="otpNext(this,'otpa2')" id="otpa1" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
-            <input type="password" maxlength="1" class="otp-input" oninput="otpNext(this,'otpa3')" id="otpa2" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
-            <input type="password" maxlength="1" class="otp-input" oninput="otpNext(this,'otpa4')" id="otpa3" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
-            <input type="password" maxlength="1" class="otp-input" id="otpa4" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
-          </div>
-          <button class="btn" style="background:var(--amber); color:#fff; margin:30px 0 0;" onclick="verifyOTP('agent')">Login to Terminal</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- AGENT: DASHBOARD -->
-    <div class="screen" id="screen-a-home">
-      <div class="top-nav" style="background:var(--amber); border-bottom:none;">
-        <div style="flex:1;">
-          <p style="font-size:11px; opacity:0.7; margin-bottom:2px;">Active Agent</p>
-          <h2 style="font-size:18px; font-weight:700;">Sunil Verma</h2>
-        </div>
-        <div style="display:flex; gap:14px; align-items:center;">
-          <div style="background:rgba(255,255,255,0.2); padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700;">LIVE</div>
-        </div>
-      </div>
-      <div class="scroll-body">
-        <div class="metric-grid">
-          <div class="metric">
-            <div class="label">Today's Target</div>
-            <div class="value">₹14,500</div>
-            <div class="sub">12 collections pending</div>
-          </div>
-          <div class="metric">
-            <div class="label">Commission</div>
-            <div class="value green" id="col-commission">₹0</div>
-            <div class="sub">2% per collection</div>
-          </div>
-        </div>
-
-        <div class="section-hdr"><h3>Collections Nearby</h3></div>
-        
-        <div class="list-item" onclick="collectItem(0, 'Rahul S.', 'M.G. Road')">
-          <div class="list-icon amber"><i class="ti ti-cash"></i></div>
-          <div class="list-body">
-            <div style="font-weight:700; font-size:14px;">Rahul Sharma</div>
-            <div style="font-size:12px; color:var(--text3);">₹120 · M.G. Road (200m)</div>
-          </div>
-          <div class="badge badge-amber" id="ci-0">Pending</div>
-        </div>
-
-        <div class="list-item" onclick="collectItem(1, 'Amit K.', 'Civil Lines')">
-          <div class="list-icon amber"><i class="ti ti-cash"></i></div>
-          <div class="list-body">
-            <div style="font-weight:700; font-size:14px;">Amit Kumar</div>
-            <div style="font-size:12px; color:var(--text3);">₹120 · Civil Lines (1.2km)</div>
-          </div>
-          <div class="badge badge-amber" id="ci-1">Pending</div>
-        </div>
-
-        <div class="list-item" onclick="collectItem(2, 'Priya M.', 'Sector 15')">
-          <div class="list-icon amber"><i class="ti ti-cash"></i></div>
-          <div class="list-body">
-            <div style="font-weight:700; font-size:14px;">Priya Mehta</div>
-            <div style="font-size:12px; color:var(--text3);">₹120 · Sector 15 (2.5km)</div>
-          </div>
-          <div class="badge badge-amber" id="ci-2">Pending</div>
-        </div>
-      </div>
-
-      <div class="bottom-nav g3">
-        <button class="nav-item active" onclick="showATab('screen-a-home',this)"><i class="ti ti-map"></i><span>Routes</span></button>
-        <button class="nav-item" onclick="showATab('screen-a-tasks',this)"><i class="ti ti-clipboard-list"></i><span>Tasks</span></button>
-        <button class="nav-item" onclick="showATab('screen-a-profile',this)"><i class="ti ti-user"></i><span>Profile</span></button>
       </div>
     </div>
 
   </div><!-- end .app -->
 </div><!-- end .phone-wrap -->
 
-<script src="app.js"></script>
+<script src="screens.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/loans.js"></script>
+<script src="js/payments.js"></script>
+<script src="js/init.js"></script>
 </body>
 </html>

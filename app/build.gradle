@@ -15,22 +15,25 @@ android {
 
         // Support for various screen densities
         resConfigs "en", "hi"
+
+        // ── Play Integrity API requires a Cloud Project Number ──
+        // Set via environment variable or gradle.properties
+        buildConfigField "String", "CLOUD_PROJECT_NUMBER", "\"${System.getenv('CLOUD_PROJECT_NUMBER') ?: '0'}\""
     }
 
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+            storePassword System.getenv('KEYSTORE_PASSWORD') ?: 'android'
+            keyAlias System.getenv('KEY_ALIAS') ?: 'androiddebugkey'
+            keyPassword System.getenv('KEY_PASSWORD') ?: 'android'
         }
-        // Add release signing config when ready to publish:
-        // release {
-        //     storeFile file('release.keystore')
-        //     storePassword System.getenv("KEYSTORE_PASSWORD")
-        //     keyAlias System.getenv("KEY_ALIAS")
-        //     keyPassword System.getenv("KEY_PASSWORD")
-        // }
+        release {
+            storeFile file('release.keystore')
+            storePassword System.getenv('KEYSTORE_PASSWORD')
+            keyAlias System.getenv('KEY_ALIAS')
+            keyPassword System.getenv('KEY_PASSWORD')
+        }
     }
 
     buildTypes {
@@ -44,7 +47,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            // signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
         }
     }
 
@@ -65,6 +68,11 @@ android {
             excludes += ['/META-INF/{AL2.0,LGPL2.1}']
         }
     }
+
+    // ── BuildConfig generation for CLOUD_PROJECT_NUMBER ──
+    buildFeatures {
+        buildConfig true
+    }
 }
 
 dependencies {
@@ -81,4 +89,16 @@ dependencies {
 
     // Swipe refresh (optional)
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
+    // ── Play Integrity API (device attestation) ──
+    implementation 'com.google.android.play:integrity:1.4.0'
+
+    // ── Biometric Authentication (fingerprint / face unlock) ──
+    implementation 'androidx.biometric:biometric:1.2.0-alpha05'
+
+    // ── Play Services (base + tasks for Integrity API) ──
+    implementation 'com.google.android.gms:play-services-base:18.5.0'
+
+    // ── OkHttp (for secure API calls and Play Integrity) ──
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 }

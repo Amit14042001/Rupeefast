@@ -1,0 +1,21 @@
+# ──────────────────────────────────────────────
+# RupeeFast — Grafana Datasource Provisioning
+# ──────────────────────────────────────────────
+# Automatically adds Prometheus as a data source
+# on Grafana startup — no manual setup needed.
+# ──────────────────────────────────────────────
+
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
+    uid: prometheus
+    jsonData:
+      prometheusType: Prometheus
+      prometheusVersion: 2.x
+      timeInterval: 15s

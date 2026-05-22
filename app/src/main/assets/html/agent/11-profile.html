@@ -1,0 +1,27 @@
+    <!-- ════════════════════════════════════════
+         AGENT: PROFILE
+    ════════════════════════════════════════ -->
+    <div class="screen" id="screen-a-profile">
+      <div class="top-nav" style="background:var(--amber);"><button class="back-btn" onclick="showATab('screen-a-home',null)" aria-label="Go back"><i class="ti ti-arrow-left"></i></button><h2>Agent Profile</h2></div>
+      <div class="scroll-body" style="background:var(--surface);">
+        <div style="text-align:center;padding:30px 24px;">
+          <div style="width:72px;height:72px;border-radius:50%;background:var(--amber-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px;color:var(--amber);font-weight:700;">SV</div>
+          <h2 style="font-size:20px;font-weight:700;">Sunil Verma</h2>
+          <p style="font-size:13px;color:var(--text3);">Agent ID: AG2431 · Zone 4</p>
+        </div>
+        <div class="section-hdr"><h3>Performance</h3></div>
+        <div class="metric-grid">
+          <div class="metric"><div class="label">Rating</div><div class="value">4.8⭐</div><div class="sub">Top 5% agent</div></div>
+          <div class="metric"><div class="label">Tasks Done</div><div class="value blue">134</div><div class="sub">This month</div></div>
+        </div>
+        <div class="list-item" onclick="showScreen('screen-a-earnings')"><div class="list-icon green"><i class="ti ti-cash"></i></div><div class="list-body" style="font-weight:600;font-size:14px;">My Earnings</div><i class="ti ti-chevron-right" style="color:var(--text3);"></i></div>
+        <div class="list-item" onclick="showScreen('screen-a-acquire')"><div class="list-icon purple"><i class="ti ti-user-plus"></i></div><div class="list-body" style="font-weight:600;font-size:14px;">Acquire Borrowers</div><i class="ti ti-chevron-right" style="color:var(--text3);"></i></div>
+        <div class="list-item" onclick="showScreen('screen-a-leaderboard')"><div class="list-icon amber"><i class="ti ti-trophy"></i></div><div class="list-body" style="font-weight:600;font-size:14px;">Leaderboard</div><i class="ti ti-chevron-right" style="color:var(--text3);"></i></div>
+        <div class="list-item" onclick="logoutUser()"><div class="list-icon red"><i class="ti ti-logout"></i></div><div class="list-body" style="font-weight:600;font-size:14px;color:var(--red);">Logout</div></div>
+      </div>
+      <div class="bottom-nav g3">
+        <button class="nav-item" onclick="showATab('screen-a-home',this)"><i class="ti ti-map"></i><span>Routes</span></button>
+        <button class="nav-item" onclick="showATab('screen-a-tasks',this)"><i class="ti ti-clipboard-list"></i><span>Tasks</span></button>
+        <button class="nav-item active" onclick="showATab('screen-a-profile',this)"><i class="ti ti-user"></i><span>Profile</span></button>
+      </div>
+    </div>

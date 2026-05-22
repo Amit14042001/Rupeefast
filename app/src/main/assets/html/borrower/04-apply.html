@@ -1,0 +1,108 @@
+    <!-- ════════════════════════════════════════
+         BORROWER: APPLY LOAN
+    ════════════════════════════════════════ -->
+    <div class="screen" id="screen-b-apply">
+      <div class="top-nav">
+        <button class="back-btn" onclick="showBTab('screen-b-home',null)" aria-label="Go back"><i class="ti ti-arrow-left"></i></button>
+        <h2>Apply for Loan</h2>
+      </div>
+      <div class="scroll-body">
+        <div class="card card-tint-blue" style="margin-top:12px; border:none; text-align:center; padding:24px;">
+          <p style="font-size:12px; color:var(--primary); font-weight:600; text-transform:uppercase;">Maximum Eligibility</p>
+          <h2 style="font-size:32px; font-weight:800; color:var(--primary); margin-top:4px;">₹12,000</h2>
+          <p style="font-size:11px; color:var(--text2); margin-top:4px;">Based on your Trust Score of 74</p>
+        </div>
+
+        <form style="margin:0">
+        <div class="card" style="margin-top:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:baseline;">
+            <h3 style="font-size:14px; color:var(--text);">Loan Amount</h3>
+            <span id="amt-val" style="font-size:22px; font-weight:800; color:var(--primary);">₹8,000</span>
+          </div>
+          <input type="range" min="2000" max="12000" step="500" value="8000" id="loan-range" oninput="calcLoan(this.value)" aria-label="Loan amount" style="width:100%; margin-top:20px;">
+          <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:11px; color:var(--text3); font-weight:600;">
+            <span>₹2,000</span>
+            <span>₹12,000</span>
+          </div>
+        </div>
+        </form>
+
+        <div class="section-hdr"><h3>Select Purpose</h3></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:0 12px;">
+          <button class="purpose-btn" onclick="selPurpose(0)" style="padding:16px; border-radius:12px; border:1.5px solid var(--primary); background:var(--primary-bg); color:var(--primary); font-weight:700;">Business Expansion</button>
+          <button class="purpose-btn" onclick="selPurpose(1)" style="padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--surface); color:var(--text2); font-weight:600;">Emergency Cash</button>
+        </div>
+
+        <div class="section-hdr"><h3>Repayment Plan</h3></div>
+
+        <!-- Plan 0: Daily -->
+        <div class="card plan-card selected" onclick="selPlan(0)" role="button" tabindex="0" aria-label="Select daily payment plan" style="display:flex; align-items:center; gap:14px; cursor:pointer;">
+          <div class="check" style="width:22px; height:22px; border-radius:50%; border:2px solid var(--primary); background:var(--primary); display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px;"><i class="ti ti-check"></i></div>
+          <div style="flex:1;">
+            <div style="font-weight:700; color:var(--text);">Daily Micro-Payments</div>
+            <div style="font-size:12px; color:var(--text3); margin-top:2px;"><span id="p0-amt">₹120</span><span> / day for 100 days</span></div>
+            <div style="font-size:11px; color:var(--text2); margin-top:2px;">You receive: <span id="p0-recv">₹7,200</span></div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:700; color:var(--green);">₹12,000</div>
+            <div style="font-size:11px; color:var(--text3);">Total Pay</div>
+          </div>
+        </div>
+
+        <!-- Plan 1: Weekly -->
+        <div class="card plan-card" onclick="selPlan(1)" role="button" tabindex="0" aria-label="Select weekly payment plan" style="display:flex; align-items:center; gap:14px; cursor:pointer; margin-top:8px;">
+          <div class="check" style="width:22px; height:22px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center;"></div>
+          <div style="flex:1;">
+            <div style="font-weight:700; color:var(--text);">Weekly Payment</div>
+            <div style="font-size:12px; color:var(--text3); margin-top:2px;"><span id="p1-amt">₹630</span><span> / week for ~3 months</span></div>
+            <div style="font-size:11px; color:var(--text2); margin-top:2px;">You receive: <span id="p1-recv">₹7,400</span></div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:700; color:var(--green);">₹11,800</div>
+            <div style="font-size:11px; color:var(--text3);">Total Pay</div>
+          </div>
+        </div>
+
+        <!-- Plan 2: Monthly -->
+        <div class="card plan-card" onclick="selPlan(2)" role="button" tabindex="0" aria-label="Select monthly payment plan" style="display:flex; align-items:center; gap:14px; cursor:pointer; margin-top:8px;">
+          <div class="check" style="width:22px; height:22px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center;"></div>
+          <div style="flex:1;">
+            <div style="font-weight:700; color:var(--text);">Monthly Payment</div>
+            <div style="font-size:12px; color:var(--text3); margin-top:2px;"><span id="p2-amt">₹9,440</span><span> / month for 1 month</span></div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:700; color:var(--green);">₹9,440</div>
+            <div style="font-size:11px; color:var(--text3);">Total Pay</div>
+          </div>
+        </div>
+
+        <!-- Loan Summary -->
+        <div class="card card-tint-blue" style="margin-top:16px;">
+          <div style="font-weight:700; font-size:13px; color:var(--primary); margin-bottom:10px;">Loan Summary</div>
+          <div style="display:flex; justify-content:space-between; font-size:13px;">
+            <span style="color:var(--text2);">Loan Amount</span>
+            <span style="font-weight:600;" id="sum-loan">₹8,000</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:13px; margin-top:6px;">
+            <span style="color:var(--text2);">Processing Fee (5%)</span>
+            <span style="font-weight:600; color:var(--red);" id="sum-fee">-₹400</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:13px; margin-top:6px; padding-top:6px; border-top:0.5px solid #B5D4F4;">
+            <span style="color:var(--text2);">You Receive</span>
+            <span style="font-weight:700; color:var(--green); font-size:16px;" id="sum-recv">₹7,200</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:13px; margin-top:4px;">
+            <span style="color:var(--text2);" id="sum-pmt-label">Daily Payment</span>
+            <span style="font-weight:600;" id="sum-daily">₹120/day</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" style="margin:30px 12px 20px;" onclick="showScreen('screen-b-kyc')">Proceed to Verification →</button>
+      </div>
+      <div class="bottom-nav g4">
+        <button class="nav-item" onclick="showBTab('screen-b-home',this)"><i class="ti ti-smart-home"></i><span>Home</span></button>
+        <button class="nav-item active" onclick="showBTab('screen-b-apply',this)"><i class="ti ti-circle-plus"></i><span>Apply</span></button>
+        <button class="nav-item" onclick="showBTab('screen-b-schedule',this)"><i class="ti ti-calendar"></i><span>Schedule</span></button>
+        <button class="nav-item" onclick="showBTab('screen-b-profile',this)"><i class="ti ti-user-circle"></i><span>Account</span></button>
+      </div>
+    </div>

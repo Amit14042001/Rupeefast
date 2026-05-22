@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>RupeeFast — Digital Micro Lending</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.19.0/tabler-icons.min.css" integrity="sha384-hs5SINUk7GPohxRis+rS7grpSWEbtOIJ3sRoseBKg3CDPIKpG55RfSenbvA6ALOt" crossorigin="anonymous">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0A1E3D" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0A1E3D" media="(prefers-color-scheme: dark)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RupeeFast">
+  <meta name="application-name" content="RupeeFast">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="phone-wrap">
+  <div class="app" id="mainApp">
+
+    <!-- TOAST CONTAINER (Shared) -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- LOADING OVERLAY (Shared) -->
+    <div class="loading-overlay" id="loading-overlay">
+      <div class="spinner"></div>
+      <p id="loading-text">Loading...</p>
+    </div>
+
+    <!-- SUCCESS OVERLAY (Shared) -->
+    <div class="success-overlay" id="success-overlay">
+      <div class="success-icon"><i class="ti ti-check"></i></div>
+      <h2 id="so-title">Success</h2>
+      <p id="so-msg" style="margin-bottom:8px;"></p>
+      <button class="btn btn-primary" onclick="closeSuccess()">Continue</button>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         SCREEN: HOME (ROLE SELECT)
+    ════════════════════════════════════════ -->
+    <div class="screen active" id="screen-home" style="background:linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 40%, var(--primary-light) 100%); justify-content:center; align-items:center;">
+      <!-- Animated Floating Particles -->
+      <div class="floating-particles">
+        <div class="floating-particle"></div>
+        <div class="floating-particle"></div>
+        <div class="floating-particle"></div>
+        <div class="floating-particle"></div>
+        <div class="floating-particle"></div>
+      </div>
+
+      <!-- Glow Orbs -->
+      <div style="position:absolute; top:-80px; right:-80px; width:240px; height:240px; background:radial-gradient(circle, rgba(37,98,168,0.2) 0%, transparent 70%); border-radius:50%; pointer-events:none; z-index:0;"></div>
+      <div style="position:absolute; bottom:-60px; left:-60px; width:200px; height:200px; background:radial-gradient(circle, rgba(79, 136, 203, 0.15) 0%, transparent 70%); border-radius:50%; pointer-events:none; z-index:0;"></div>
+
+      <div style="text-align:center; padding:40px; position:relative; z-index:1; animation:staggerFadeIn 0.6s ease;">
+        <div style="width:72px; height:72px; background:rgba(255,255,255,0.12); border-radius:22px; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:34px; color:#fff; backdrop-filter:blur(8px); box-shadow:0 4px 16px rgba(0,0,0,0.1); transition:all 0.3s ease;">
+          <i class="ti ti-cash"></i>
+        </div>
+        <h1 style="font-family:'Plus Jakarta Sans',sans-serif; font-size:34px; font-weight:800; color:#fff; letter-spacing:-1px; line-height:1.1;">RupeeFast</h1>
+        <p style="color:rgba(255,255,255,0.65); margin-top:10px; font-size:15px; line-height:1.6; font-weight:400; animation:staggerFadeIn 0.6s ease 0.15s both;">Institutional grade micro-lending.<br>Instant. Ethical. Secure.</p>
+
+        <div style="margin-top:44px; display:flex; flex-direction:column; gap:12px; width:280px;">
+          <button class="btn ripple-btn" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; margin:0; padding:16px; border-radius:14px; font-size:14px; font-weight:600; backdrop-filter:blur(8px); transition:all 0.25s ease; animation:staggerFadeIn 0.6s ease 0.3s both;" onclick="showScreen('screen-login-borrower')">
+            <i class="ti ti-user"></i> &nbsp;Borrow Money
+          </button>
+          <button class="btn ripple-btn" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; margin:0; padding:16px; border-radius:14px; font-size:14px; font-weight:600; backdrop-filter:blur(8px); transition:all 0.25s ease; animation:staggerFadeIn 0.6s ease 0.45s both;" onclick="showScreen('screen-login-investor')">
+            <i class="ti ti-trending-up"></i> &nbsp;Invest & Earn
+          </button>
+          <button class="btn ripple-btn" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; margin:0; padding:16px; border-radius:14px; font-size:14px; font-weight:600; backdrop-filter:blur(8px); transition:all 0.25s ease; animation:staggerFadeIn 0.6s ease 0.6s both;" onclick="showScreen('screen-login-agent')">
+            <i class="ti ti-map-pin"></i> &nbsp;Field Agent
+          </button>
+        </div>
+        <div style="margin-top:36px; display:flex; align-items:center; gap:8px; justify-content:center; animation:staggerFadeIn 0.6s ease 0.75s both;">
+          <span style="width:6px; height:6px; background:#4ADE80; border-radius:50%; display:inline-block; animation:pulse 2s ease-in-out infinite;"></span>
+          <p style="font-size:11px; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:1px; font-weight:600;">RBI Registered NBFC Partner</p>
+        </div>
+      </div>
+    </div>

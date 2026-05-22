@@ -1,0 +1,21 @@
+    <!-- ════════════════════════════════════════
+         AGENT: TASKS DASHBOARD
+    ════════════════════════════════════════ -->
+    <div class="screen" id="screen-a-tasks">
+      <div class="top-nav" style="background:var(--amber);"><button class="back-btn" onclick="showATab('screen-a-home',null)" aria-label="Go back"><i class="ti ti-arrow-left"></i></button><h2>All Tasks</h2></div>
+      <div class="scroll-body">
+        <div class="section-hdr"><h3>Verifications (2)</h3></div>
+        <div class="list-item" onclick="showScreen('screen-a-verify')"><div class="list-icon blue"><i class="ti ti-id"></i></div><div class="list-body"><div style="font-weight:600;font-size:14px;">New Borrower: Suresh R.</div><div style="font-size:12px;color:var(--text3);">Location verification pending · 3km away</div></div><span class="badge badge-blue">Verify</span></div>
+        <div class="list-item" onclick="showScreen('screen-a-verify')"><div class="list-icon blue"><i class="ti ti-id"></i></div><div class="list-body"><div style="font-weight:600;font-size:14px;">New Borrower: Neha G.</div><div style="font-size:12px;color:var(--text3);">Residence check pending · 5km away</div></div><span class="badge badge-blue">Verify</span></div>
+        <div class="section-hdr"><h3>Collections (3)</h3></div>
+        <div class="list-item" onclick="showATab('screen-a-home',null)"><div class="list-icon amber"><i class="ti ti-cash"></i></div><div class="list-body"><div style="font-weight:600;font-size:14px;">Rahul Sharma</div><div style="font-size:12px;color:var(--text3);">₹120 · M.G. Road (200m)</div></div><span class="badge badge-amber">Collect</span></div>
+        <div class="list-item" onclick="showATab('screen-a-home',null)"><div class="list-icon amber"><i class="ti ti-cash"></i></div><div class="list-body"><div style="font-weight:600;font-size:14px;">Amit Kumar</div><div style="font-size:12px;color:var(--text3);">₹120 · Civil Lines (1.2km)</div></div><span class="badge badge-amber">Collect</span></div>
+        <div class="section-hdr"><h3>Recovery (1)</h3></div>
+        <div class="list-item" onclick="showScreen('screen-a-recovery')"><div class="list-icon red"><i class="ti ti-alert-triangle"></i></div><div class="list-body"><div style="font-weight:600;font-size:14px;">Overdue: Vikram O.</div><div style="font-size:12px;color:var(--text3);">₹360 overdue · 5 days late</div></div><span class="badge badge-red">Recover</span></div>
+      </div>
+      <div class="bottom-nav g3">
+        <button class="nav-item" onclick="showATab('screen-a-home',this)"><i class="ti ti-map"></i><span>Routes</span></button>
+        <button class="nav-item active" onclick="showATab('screen-a-tasks',this)"><i class="ti ti-clipboard-list"></i><span>Tasks</span></button>
+        <button class="nav-item" onclick="showATab('screen-a-profile',this)"><i class="ti ti-user"></i><span>Profile</span></button>
+      </div>
+    </div>

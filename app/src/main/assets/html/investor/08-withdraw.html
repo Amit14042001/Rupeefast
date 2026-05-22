@@ -1,0 +1,59 @@
+    <!-- ════════════════════════════════════════
+         INVESTOR: WITHDRAWAL FLOW
+    ════════════════════════════════════════ -->
+    <div class="screen" id="screen-i-withdraw">
+      <div class="top-nav" style="background:var(--green);"><button class="back-btn" onclick="showScreen('screen-i-home')" aria-label="Go back"><i class="ti ti-arrow-left"></i></button><h2>Withdraw Funds</h2></div>
+      <div class="scroll-body" style="background:var(--surface);">
+        <div style="text-align:center;padding:30px 24px;">
+          <div style="width:70px;height:70px;background:var(--green-bg);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:32px;color:var(--green);"><i class="ti ti-cash-banknote"></i></div>
+          <h2 style="font-size:22px;font-weight:700;">Withdraw to Bank</h2>
+          <p style="font-size:14px;color:var(--text3);margin-top:6px;">Available balance: <span style="font-weight:700;color:var(--green);">₹45,200</span></p>
+        </div>
+
+        <form style="margin:0">
+        <!-- Amount Input -->
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;">
+            <h3 style="font-size:14px;color:var(--text);font-weight:600;">Withdrawal Amount</h3>
+            <span id="wd-amt-val" style="font-size:22px;font-weight:800;color:var(--green);">₹5,000</span>
+          </div>
+          <input type="range" name="withdraw_amount" min="1000" max="45000" step="1000" value="5000" oninput="calcWithdraw(this.value)" aria-label="Withdrawal amount" style="width:100%;margin-top:20px;accent-color:var(--green);">
+          <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:11px;color:var(--text3);font-weight:600;">
+            <span>₹1,000</span>
+            <span>₹45,000</span>
+          </div>
+        </div>
+
+        <!-- Bank Account -->
+        <div class="section-hdr"><h3>Transfer To</h3></div>
+        <div class="card selected" style="border-left:3px solid var(--green);">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <i class="ti ti-building-bank" style="font-size:22px;color:var(--green);"></i>
+            <div style="flex:1;">
+              <div style="font-weight:600;font-size:14px;">State Bank of India</div>
+              <div style="font-size:12px;color:var(--text3);">XXXX-XXXX-4821 · Savings</div>
+            </div>
+            <i class="ti ti-checks" style="color:var(--green);font-size:18px;"></i>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="card card-tint-green" style="margin-top:12px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+            <span style="font-size:13px;color:var(--text3);">Withdrawal Amount</span>
+            <span style="font-weight:700;" id="wd-sum-amt">₹5,000</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+            <span style="font-size:13px;color:var(--text3);">Processing Time</span>
+            <span style="font-weight:700;">1-2 business days</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <span style="font-size:13px;color:var(--text3);">Withdrawal Fee</span>
+            <span style="font-weight:700;color:var(--green);">Free</span>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-green" style="margin:30px 12px 20px;" onclick="processWithdraw()">Withdraw ₹5,000</button>
+        </form>
+      </div>
+    </div>

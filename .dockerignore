@@ -1,0 +1,26 @@
+# Dependencies
+**/node_modules
+**/node_modules/
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment (Docker uses .env.docker)
+backend/.env
+**/*.local
+
+# Logs
+*.log

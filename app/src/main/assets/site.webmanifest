@@ -1,0 +1,31 @@
+{
+  "name": "RupeeFast — Digital Micro Lending",
+  "short_name": "RupeeFast",
+  "description": "Institutional grade micro-lending. Instant. Ethical. Secure.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0A1E3D",
+  "theme_color": "#0A1E3D",
+  "categories": ["finance", "lending", "business"],
+  "lang": "en-IN",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "scope": "/"
+}

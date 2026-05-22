@@ -1,0 +1,27 @@
+    <!-- INVESTOR: OTP -->
+    <div class="screen" id="screen-otp-investor">
+      <div class="top-nav">
+        <button class="back-btn" onclick="showScreen('screen-login-investor')" aria-label="Go back"><i class="ti ti-arrow-left"></i></button>
+        <h2>Verify OTP</h2>
+      </div>
+      <div class="scroll-body" style="background:var(--surface);">
+        <div style="padding:40px 24px; text-align:center;">
+          <div style="width:60px; height:60px; background:var(--green-bg); border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px; color:var(--green);">
+            <i class="ti ti-message-dots"></i>
+          </div>
+          <h2 style="font-size:22px; font-weight:700;">Verification</h2>
+          <p style="font-size:14px; color:var(--text3); margin-top:6px;">We've sent a code to your mobile</p>
+        </div>
+        <div style="padding:0 24px; text-align:center;">
+          <form onsubmit="verifyOTP('investor');return false" style="margin:0">
+          <div style="display:flex; gap:12px; justify-content:center;">
+            <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-input" oninput="otpNext(this,'otpi2')" id="otpi1" name="otp1" aria-label="OTP digit 1" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
+            <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-input" oninput="otpNext(this,'otpi3')" id="otpi2" name="otp2" aria-label="OTP digit 2" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
+            <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-input" oninput="otpNext(this,'otpi4')" id="otpi3" name="otp3" aria-label="OTP digit 3" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
+            <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-input" id="otpi4" name="otp4" aria-label="OTP digit 4" style="width:48px;height:52px;text-align:center;font-size:22px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-xs);">
+          </div>
+          <button class="btn btn-green" style="margin:30px 0 0;" type="submit">Verify &amp; Continue</button>
+          </form>
+        </div>
+      </div>
+    </div>

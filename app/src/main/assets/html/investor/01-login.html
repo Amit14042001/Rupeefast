@@ -1,0 +1,30 @@
+    <!-- ════════════════════════════════════════
+         INVESTOR: LOGIN
+    ════════════════════════════════════════ -->
+    <div class="screen" id="screen-login-investor">
+      <div class="top-nav">
+        <button class="back-btn" onclick="showScreen('screen-home')" aria-label="Go back"><i class="ti ti-arrow-left"></i></button>
+        <h2>Investor Login</h2>
+      </div>
+      <div class="scroll-body" style="background:var(--surface);">
+        <div style="padding:40px 24px; text-align:center;">
+          <div style="width:60px; height:60px; background:var(--green-bg); border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px; color:var(--green);">
+            <i class="ti ti-trending-up"></i>
+          </div>
+          <h2 style="font-size:22px; font-weight:700;">Grow your Capital</h2>
+          <p style="font-size:14px; color:var(--text3); margin-top:6px;">Join the RupeeFast P2P Marketplace</p>
+        </div>
+        <div style="padding:0 24px;">
+          <form onsubmit="doLogin('investor');return false" style="margin:0">
+          <div class="card" style="margin:0; padding:12px; border-radius:var(--radius-sm);">
+            <label for="mobile-investor" style="display:block; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; margin-bottom:8px;">Mobile Number</label>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <div style="font-size:15px; font-weight:700; color:var(--text); border-right:1px solid var(--border); padding-right:10px;">🇮🇳 +91</div>
+              <input type="tel" id="mobile-investor" name="mobile" placeholder="9876543210" maxlength="10" style="flex:1; border:none; outline:none; font-size:16px; font-weight:600; letter-spacing:1px;">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-green" style="margin:24px 0 0;">Send OTP</button>
+          </form>
+        </div>
+      </div>
+    </div>

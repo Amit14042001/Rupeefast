@@ -1,0 +1,1363 @@
+/**
+ * RupeeFast Core Application Logic
+ * Professional Web App
+ */
+
+// ══════════════════════════════════════════════════
+// API & STATE CONFIGURATION
+// ══════════════════════════════════════════════════
+
+const API_BASE_URL = window.location.origin + '/api';
+let currentUser = null;
+let authToken = localStorage.getItem('rupeefast_token') || null;
+
+/** Show loading overlay */
+function showLoading(msg) {
+  const el = document.getElementById('loading-text');
+  if (el) el.textContent = msg || 'Loading...';
+  const overlay = document.getElementById('loading-overlay');
+  if (overlay) overlay.classList.add('active');
+}
+
+/** Hide loading overlay */
+function hideLoading() {
+  const overlay = document.getElementById('loading-overlay');
+  if (overlay) overlay.classList.remove('active');
+}
+
+/**
+ * Toast Notification System
+ */
+function showToast(message, type = 'info', duration = 3000) {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+
+  const icons = { success: 'ti ti-check-circle', error: 'ti ti-alert-circle', info: 'ti ti-info-circle' };
+  
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  
+  const icon = document.createElement('i');
+  icon.className = icons[type] || icons.info;
+  toast.appendChild(icon);
+  
+  const span = document.createElement('span');
+  span.textContent = message;
+  toast.appendChild(span);
+  
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(-12px) scale(0.95)';
+    toast.style.transition = 'all 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+}
+
+async function apiFetch(endpoint, options = {}) {
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers
+  };
+  
+  if (authToken) {
+    headers['Authorization'] = 'Bearer ' + authToken;
+  }
+
+  const showLoader = options.showLoader !== false;
+  if (showLoader) showLoading('Connecting...');
+
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      headers
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'API Error');
+    return data;
+  } catch (err) {
+    console.error('API Fetch Error:', err);
+    if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError') || err.message.includes('load')) {
+      showToast('Backend server unavailable. Running in offline demo mode.', 'error', 5000);
+    } else {
+      showToast(err.message, 'error', 4000);
+    }
+    return null;
+  } finally {
+    if (showLoader) hideLoading();
+  }
+}
+
+// ══════════════════════════════════════════════════
+// NAVIGATION & UI CORE
+// ══════════════════════════════════════════════════
+
+/** Set of screen IDs already rendered into the DOM */
+const renderedScreens = new Set();
+
+/**
+ * Performance log — stores timing data for every lazy render.
+ * Access via window.__renderPerf (latest by id) or window.__renderPerfLog (chronological).
+ */
+const renderPerfLog = [];
+const renderPerf = {};
+
+// Expose for console access
+if (typeof window !== 'undefined') {
+  window.__renderPerf = renderPerf;
+  window.__renderPerfLog = renderPerfLog;
+}
+
+// ── Navigation Stack for slide direction ──
+const _navStack = [];
+let _slideDirection = 'none'; // 'forward' | 'back' | 'none'
+
+/**
+ * Check if a screen ID belongs to a bottom-nav tab.
+ * Tab switches use fade transitions instead of slides.
+ */
+function _hasBottomNav(id) {
+  return window.SCREENS && window.SCREENS[id] && window.SCREENS[id].includes('bottom-nav');
+}
+
+/**
+ * Generates a skeleton loading placeholder for a given screen ID.
+ * The skeleton matches the general layout of the target screen
+ * (login form, dashboard, list, or generic card) so transitions feel
+ * seamless.
+ */
+function createSkeleton(id) {
+  let innerHtml = '';
+
+  if (id.startsWith('screen-login-') || id.startsWith('screen-otp-')) {
+    // ── Login / OTP Skeleton ──
+    const isOtp = id.startsWith('screen-otp-');
+    innerHtml = `
+      <div class="top-nav">
+        <div class="skel-shimmer" style="width:32px;height:32px;border-radius:var(--radius-xs);"></div>
+        <div class="skel-shimmer skel-block w-40 h-14 mb-0" style="margin-left:12px;"></div>
+      </div>
+      <div class="scroll-body" style="background:var(--surface);display:flex;flex-direction:column;align-items:center;padding:40px 24px 0;">
+        <div class="skel-shimmer skel-icon md rounded mb-24"></div>
+        <div class="skel-shimmer skel-block w-50 h-20 mb-4 mx-auto"></div>
+        <div class="skel-shimmer skel-block w-70 h-14 mb-30 mx-auto"></div>
+        ${isOtp ? `
+          <div class="skel-otp-row mb-24">
+            ${'<div class="skel-shimmer"></div>'.repeat(4)}
+          </div>
+        ` : `
+          <div class="skel-card no-margin" style="width:100%;">
+            <div class="skel-shimmer skel-block w-30 h-12 mb-8"></div>
+            <div class="skel-shimmer skel-block w-90 h-20 mb-0"></div>
+          </div>
+        `}
+        <div class="skel-shimmer skel-block w-100 h-48 mb-8 rounded-12" style="margin-top:24px;"></div>
+      </div>`;
+  } else if (id.endsWith('-home')) {
+    // ── Dashboard Skeleton ──
+    const isInvestor = id.startsWith('screen-i-');
+    const isAgent = id.startsWith('screen-a-');
+    const theme = isInvestor ? 'var(--green)' : isAgent ? 'var(--amber)' : 'var(--primary)';
+    const navBg = `background:${theme};border-bottom:none;`;
+    innerHtml = `
+      <div class="top-nav" style="${navBg}">
+        <div style="flex:1;">
+          <div class="skel-shimmer skel-block w-40 h-12 mb-4" style="background:rgba(255,255,255,0.15);"></div>
+          <div class="skel-shimmer skel-block w-60 h-14 mb-0" style="background:rgba(255,255,255,0.2);"></div>
+        </div>
+        <div class="skel-shimmer" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.2);"></div>
+      </div>
+      <div class="scroll-body">
+        <div class="skel-hero">
+          <div class="skel-shimmer skel-block w-50 h-12 mb-8"></div>
+          <div class="skel-shimmer skel-block w-60 h-32 mb-0"></div>
+          <div class="skel-shimmer skel-block w-100 h-6 rounded-full" style="margin-top:20px;"></div>
+          <div class="skel-shimmer skel-block w-100 h-12 mb-0" style="margin-top:16px;"></div>
+          <div class="skel-shimmer skel-block w-60 h-14 mb-0" style="margin-top:20px;border-radius:var(--radius-sm);height:44px;"></div>
+        </div>
+        <div class="metric-grid" style="margin-top:8px;">
+          <div class="skel-card"><div class="skel-shimmer skel-block w-50 h-12 mb-8"></div><div class="skel-shimmer skel-block w-40 h-20 mb-6"></div><div class="skel-shimmer skel-block w-60 h-12 mb-0"></div></div>
+          <div class="skel-card"><div class="skel-shimmer skel-block w-50 h-12 mb-8"></div><div class="skel-shimmer skel-block w-40 h-20 mb-6"></div><div class="skel-shimmer skel-block w-60 h-12 mb-0"></div></div>
+        </div>
+        <div class="section-hdr"><div class="skel-shimmer skel-block w-30 h-12 mb-0"></div></div>
+        <div class="skel-card">
+          ${'<div class="skel-list-item" style="padding:14px 0;"><div class="skel-shimmer skel-icon sm rounded-12"></div><div style="flex:1;"><div class="skel-shimmer skel-block w-50 h-14 mb-4"></div><div class="skel-shimmer skel-block w-70 h-12 mb-0"></div></div></div>'.repeat(3)}
+        </div>
+        <div class="section-hdr"><div class="skel-shimmer skel-block w-40 h-12 mb-0"></div></div>
+        ${'<div class="skel-list-item"><div class="skel-shimmer skel-icon sm rounded-12"></div><div style="flex:1;"><div class="skel-shimmer skel-block w-60 h-14 mb-4"></div><div class="skel-shimmer skel-block w-40 h-12 mb-0"></div></div><div class="skel-shimmer skel-block w-20 h-12 mb-0"></div></div>'.repeat(3)}
+      </div>
+      <div class="bottom-nav g${isAgent ? '3' : '4'}">
+        ${'<div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;"><div class="skel-shimmer" style="width:22px;height:22px;border-radius:6px;"></div><div class="skel-shimmer skel-block w-40 h-8 mb-0"></div></div>'.repeat(isAgent ? 3 : 4)}
+      </div>`;
+  } else {
+    // ── Generic Card/List Skeleton (fallback) ──
+    const hasBottomNav = window.SCREENS && window.SCREENS[id] && window.SCREENS[id].includes('bottom-nav');
+    const cols = hasBottomNav ? (id.startsWith('screen-a-') ? '3' : '4') : null;
+    innerHtml = `
+      <div class="top-nav">
+        <div class="skel-shimmer" style="width:32px;height:32px;border-radius:var(--radius-xs);"></div>
+        <div class="skel-shimmer skel-block w-40 h-14 mb-0" style="margin-left:12px;"></div>
+      </div>
+      <div class="scroll-body">
+        <div class="skel-card" style="margin-top:12px;">
+          <div class="skel-shimmer skel-block w-80 h-14 mb-8"></div>
+          <div class="skel-shimmer skel-block w-60 h-20 mb-12"></div>
+          <div class="skel-shimmer skel-block w-100 h-12 mb-4"></div>
+          <div class="skel-shimmer skel-block w-90 h-12 mb-4"></div>
+          <div class="skel-shimmer skel-block w-70 h-12 mb-0"></div>
+        </div>
+        <div class="skel-card">
+          <div class="skel-shimmer skel-block w-50 h-12 mb-8"></div>
+          <div class="skel-shimmer skel-block w-80 h-14 mb-6"></div>
+          <div class="skel-shimmer skel-block w-60 h-12 mb-0"></div>
+        </div>
+        <div class="section-hdr"><div class="skel-shimmer skel-block w-40 h-12 mb-0"></div></div>
+        ${'<div class="skel-list-item"><div class="skel-shimmer skel-icon sm rounded"></div><div style="flex:1;"><div class="skel-shimmer skel-block w-60 h-14 mb-4"></div><div class="skel-shimmer skel-block w-40 h-12 mb-0"></div></div><div class="skel-shimmer skel-block w-20 h-12 mb-0"></div></div>'.repeat(5)}
+      </div>${hasBottomNav ? `\n      <div class="bottom-nav g${cols}">
+        ${'<div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;"><div class="skel-shimmer" style="width:22px;height:22px;border-radius:6px;"></div><div class="skel-shimmer skel-block w-40 h-8 mb-0"></div></div>'.repeat(parseInt(cols))}
+      </div>` : ''}`;
+  }
+
+  return `<div class="screen skeleton-screen" id="skel-${id}">${innerHtml}</div>`;
+}
+
+/**
+ * Lazily renders a screen's HTML into the DOM on first access.
+ * Screens are stored as strings in window.SCREENS (generated by build-html.js).
+ * Logs timing breakdown to console and renderPerfLog.
+ */
+function renderScreen(id) {
+  if (renderedScreens.has(id) || document.getElementById(id)) return;
+
+  const t0 = performance.now();
+
+  const html = window.SCREENS && window.SCREENS[id];
+  if (!html) {
+    console.warn('Screen HTML not found in SCREENS map:', id);
+    return;
+  }
+  const t1 = performance.now(); // lookup time
+
+  const mainApp = document.getElementById('mainApp');
+  if (mainApp) {
+    mainApp.insertAdjacentHTML('beforeend', html);
+    const t2 = performance.now(); // injection time
+
+    renderedScreens.add(id);
+
+    const lookupMs = t1 - t0;
+    const injectMs = t2 - t1;
+    const totalMs = t2 - t0;
+    const sizeKB = (html.length / 1024).toFixed(1);
+
+    const entry = { id, lookupMs: +lookupMs.toFixed(3), injectMs: +injectMs.toFixed(3), totalMs: +totalMs.toFixed(3), htmlSizeKB: +sizeKB };
+    renderPerfLog.push(entry);
+    renderPerf[id] = entry;
+
+    console.log(
+      `%c[Perf] %c${id} %crendered in ${totalMs.toFixed(2)}ms ` +
+      `(lookup: ${lookupMs.toFixed(2)}ms, inject: ${injectMs.toFixed(2)}ms, ${sizeKB}KB)`,
+      'color:#8b5cf6;font-weight:700',
+      'color:#f59e0b;font-weight:600',
+      'color:#6b7280'
+    );
+  }
+}
+
+/**
+ * Completes the screen transition after lazy-render:
+ * removes the skeleton, applies slide/fade animation to old & new screens.
+ */
+function finishScreenTransition(id, navT0, isFirstRender) {
+  // Remove skeleton placeholder if present
+  const skeleton = document.getElementById('skel-' + id);
+  if (skeleton) {
+    skeleton.classList.remove('active');
+    // Small delay before removing to let the real screen fade in
+    setTimeout(() => {
+      if (skeleton.parentNode) skeleton.remove();
+    }, 300);
+  }
+
+  const currentActive = document.querySelector('.screen.active');
+  const nextScreen = document.getElementById(id);
+
+  if (!nextScreen) {
+    console.warn('Screen not found:', id);
+    return;
+  }
+
+  // ── Apply transition based on direction ──
+  const animDuration = 0.3;
+  const dur = animDuration + 's';
+
+  if (_slideDirection === 'forward' && currentActive && currentActive !== nextScreen && !currentActive.id.startsWith('skel-')) {
+    // Forward: current slides out left, new screen slides in from right
+    currentActive.classList.remove('active');
+    currentActive.classList.add('slide-out');
+    currentActive.style.animation = 'slideOutLeft ' + dur + ' ease forwards';
+
+    nextScreen.classList.add('active');
+    nextScreen.style.animation = 'none';
+    void nextScreen.offsetWidth;
+    nextScreen.style.animation = 'slideInRight ' + dur + ' ease';
+
+    // After animation, hide the old screen and reset styles
+    setTimeout(() => {
+      currentActive.classList.remove('slide-out');
+      currentActive.style.animation = '';
+    }, animDuration * 1000);
+
+  } else if (_slideDirection === 'back' && currentActive && currentActive !== nextScreen && !currentActive.id.startsWith('skel-')) {
+    // Back: current slides out right, new screen slides in from left
+    currentActive.classList.remove('active');
+    currentActive.classList.add('slide-out');
+    currentActive.style.animation = 'slideOutRight ' + dur + ' ease forwards';
+
+    nextScreen.classList.add('active');
+    nextScreen.style.animation = 'none';
+    void nextScreen.offsetWidth;
+    nextScreen.style.animation = 'slideInLeft ' + dur + ' ease';
+
+    // After animation, hide the old screen and reset styles
+    setTimeout(() => {
+      currentActive.classList.remove('slide-out');
+      currentActive.style.animation = '';
+    }, animDuration * 1000);
+
+  } else {
+    // Fade (tab switches, first renders, skeletons)
+    if (currentActive && currentActive !== nextScreen && !currentActive.id.startsWith('skel-')) {
+      currentActive.style.animation = 'none';
+      currentActive.classList.remove('active');
+    }
+
+    nextScreen.classList.add('active');
+    nextScreen.style.animation = 'none';
+    void nextScreen.offsetWidth;
+    nextScreen.style.animation = 'screenFadeIn ' + dur + ' ease';
+  }
+
+  // Scroll to top
+  nextScreen.querySelector('.scroll-body')?.scrollTo(0, 0);
+
+  // 🏁 Reset direction for next navigation
+  _slideDirection = 'none';
+
+  // Measure paint-complete time via requestAnimationFrame
+  if (isFirstRender) {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const paintMs = performance.now() - navT0;
+        console.log(
+          `%c[Perf] %c${id} %cvisible in ${paintMs.toFixed(1)}ms (click-to-paint)`,
+          'color:#8b5cf6;font-weight:700',
+          'color:#22c55e;font-weight:600',
+          'color:#6b7280'
+        );
+      });
+    });
+  }
+
+  // Trigger screen-specific logic
+  if (id === 'screen-b-ai-score') setTimeout(runAIScore, 200);
+  if (id === 'screen-b-home' || id === 'screen-b-schedule') { buildSchedule(); setTimeout(runCountUp, 200); }
+  if (id === 'screen-i-home') setTimeout(runCountUp, 200);
+  if (id === 'screen-a-home') setTimeout(runCountUp, 200);
+  if (id === 'screen-b-mandates') loadMandates();
+}
+
+/**
+ * Switch between screens with smooth slide transition.
+ * Lazily renders the target screen if not already in the DOM.
+ * On first render, shows a skeleton placeholder before injecting the real HTML.
+ * Determines slide direction (forward/back/none) using a navigation stack.
+ */
+function showScreen(id) {
+  const navT0 = performance.now();
+  const isFirstRender = !renderedScreens.has(id) && !document.getElementById(id);
+
+  // ── Determine slide direction via navigation stack ──
+  const prevId = _navStack.length > 0 ? _navStack[_navStack.length - 1] : null;
+
+  if (prevId && id !== prevId) {
+    // Tab switch? Both have bottom-nav → fade, don't touch stack
+    if (_hasBottomNav(prevId) && _hasBottomNav(id)) {
+      _slideDirection = 'none';
+      // Replace top of stack with the new tab
+      _navStack[_navStack.length - 1] = id;
+    } else {
+      // Check if this screen was visited before (back navigation)
+      const backIndex = _navStack.indexOf(id);
+      if (backIndex !== -1 && backIndex < _navStack.length - 1) {
+        _slideDirection = 'back';
+        _navStack.splice(backIndex + 1); // Pop back to this screen
+      } else {
+        _slideDirection = 'forward';
+        _navStack.push(id); // Push new screen onto stack
+      }
+    }
+  } else if (!prevId) {
+    // First screen ever — no direction, just push
+    _slideDirection = 'none';
+    _navStack.push(id);
+  } else {
+    // Same screen — no animation
+    _slideDirection = 'none';
+  }
+
+  if (isFirstRender) {
+    // Inject skeleton placeholder for instant visual feedback
+    const mainApp = document.getElementById('mainApp');
+    if (mainApp) {
+      mainApp.insertAdjacentHTML('beforeend', createSkeleton(id));
+      const skeleton = document.getElementById('skel-' + id);
+      if (skeleton) skeleton.classList.add('active');
+    }
+
+    // Defer renderScreen to the next animation frame so the skeleton
+    // gets a chance to paint before being replaced by the real content.
+    requestAnimationFrame(() => {
+      renderScreen(id);
+      finishScreenTransition(id, navT0, true);
+    });
+    return;
+  }
+
+  // Already rendered — transition immediately
+  finishScreenTransition(id, navT0, false);
+}
+
+/**
+ * Handle Tab Navigation for all roles
+ */
+function showBTab(id, btn) {
+  showScreen(id);
+  const nav = btn?.closest('.bottom-nav');
+  if (nav) {
+    nav.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+}
+
+const showITab = showBTab;
+const showATab = showBTab;
+
+/**
+ * Success Overlay Controller
+ */
+function showSuccess(title, msg) {
+  const titleEl = document.getElementById('so-title');
+  const msgEl = document.getElementById('so-msg');
+  const overlay = document.getElementById('success-overlay');
+  if (titleEl) titleEl.textContent = title;
+  if (msgEl) msgEl.textContent = msg;
+  if (overlay) overlay.style.display = 'flex';
+}
+
+function closeSuccess() {
+  const overlay = document.getElementById('success-overlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+// ══════════════════════════════════════════════════
+// BORROWER DOMAIN LOGIC
+// ══════════════════════════════════════════════════
+
+function calcLoan(val) {
+  val = parseInt(val);
+  const amtVal = document.getElementById('amt-val');
+  if (amtVal) amtVal.textContent = '₹' + val.toLocaleString('en-IN');
+  
+  const fee = Math.round(val * 0.05);
+  const reserve = Math.round(val * 0.05);
+  const recv = val - fee - reserve;
+  
+  const daily = Math.round((val * 1.2) / 100);
+  const weekly = Math.round((val * 1.18) / 15);
+
+  const p0Amt = document.getElementById('p0-amt');
+  if (p0Amt) p0Amt.textContent = '₹' + daily + '/day';
+  const p0Recv = document.getElementById('p0-recv');
+  if (p0Recv) p0Recv.textContent = '₹' + recv.toLocaleString('en-IN');
+  const p1Amt = document.getElementById('p1-amt');
+  if (p1Amt) p1Amt.textContent = '₹' + weekly + '/wk';
+  const p1Recv = document.getElementById('p1-recv');
+  if (p1Recv) p1Recv.textContent = '₹' + (recv + 200).toLocaleString('en-IN');
+  const p2Amt = document.getElementById('p2-amt');
+  if (p2Amt) p2Amt.textContent = '₹' + Math.round(val * 1.18).toLocaleString('en-IN') + '/mo';
+  
+  // Summary update
+  const sumLoan = document.getElementById('sum-loan');
+  if (sumLoan) sumLoan.textContent = '₹' + val.toLocaleString('en-IN');
+  const sumFee = document.getElementById('sum-fee');
+  if (sumFee) sumFee.textContent = '-₹' + fee.toLocaleString('en-IN');
+  const sumRecv = document.getElementById('sum-recv');
+  if (sumRecv) sumRecv.textContent = '₹' + recv.toLocaleString('en-IN');
+  const sumDaily = document.getElementById('sum-daily');
+  if (sumDaily) sumDaily.textContent = '₹' + daily + '/day';
+  updatePaymentLabel();
+}
+
+function updatePaymentLabel() {
+  const labels = ['Daily Payment', 'Weekly Payment', 'Monthly Payment'];
+  let selected = 0;
+  document.querySelectorAll('.plan-card').forEach((c, i) => {
+    if (c.classList.contains('selected')) selected = i;
+  });
+  const el = document.getElementById('sum-pmt-label');
+  const valEl = document.getElementById('sum-daily');
+  if (el) el.textContent = labels[selected];
+  const vals = ['p0-amt', 'p1-amt', 'p2-amt'];
+  const amtEl = document.getElementById(vals[selected]);
+  if (amtEl && valEl) {
+    valEl.textContent = amtEl.textContent;
+  }
+}
+
+function selPurpose(i) {
+  document.querySelectorAll('.purpose-btn').forEach((b, idx) => {
+    if (i === idx) {
+      b.style.border = '1.5px solid var(--primary)';
+      b.style.background = 'var(--primary-bg)';
+      b.style.color = 'var(--primary)';
+      b.style.transform = 'scale(1.02)';
+    } else {
+      b.style.border = '1px solid var(--border)';
+      b.style.background = 'var(--surface)';
+      b.style.color = 'var(--text2)';
+      b.style.transform = 'scale(1)';
+    }
+  });
+}
+
+function selPlan(i) {
+  document.querySelectorAll('.plan-card').forEach((c, idx) => {
+    const check = c.querySelector('.check');
+    if (i === idx) {
+      c.classList.add('selected');
+      if (check) {
+        check.style.background = 'var(--primary)';
+        check.style.borderColor = 'var(--primary)';
+        check.innerHTML = '<i class="ti ti-check" style="font-size:12px;color:#fff;"></i>';
+      }
+    } else {
+      c.classList.remove('selected');
+      if (check) {
+        check.style.background = '';
+        check.style.borderColor = 'var(--border)';
+        check.innerHTML = '';
+      }
+    }
+  });
+  updatePaymentLabel();
+}
+
+// ══════════════════════════════════════════════════
+// INVESTOR DOMAIN LOGIC
+// ══════════════════════════════════════════════════
+
+function calcInvest(val) {
+  val = parseInt(val);
+  const invAmtVal = document.getElementById('inv-amt-val');
+  if (invAmtVal) invAmtVal.textContent = '₹' + val.toLocaleString('en-IN');
+  const invTotal = document.getElementById('inv-total');
+  if (invTotal) invTotal.textContent = '₹' + val.toLocaleString('en-IN');
+  
+  const borrowersCount = Math.max(1, Math.floor(val / 500));
+  const invBorrowers = document.getElementById('inv-borrowers');
+  if (invBorrowers) invBorrowers.textContent = borrowersCount + ' borrowers × ₹500';
+  
+  const monthlyReturn = Math.round(val * 0.03);
+  const invMonthly = document.getElementById('inv-monthly');
+  if (invMonthly) invMonthly.textContent = '₹' + monthlyReturn.toLocaleString('en-IN');
+  
+  const riskPct = Math.round((500 / val) * 100);
+  const invRisk = document.getElementById('inv-risk');
+  if (invRisk) invRisk.textContent = 'Only ₹500 at risk (' + riskPct + '%)';
+}
+
+function selRisk(r) {
+  ['safe', 'mod', 'high'].forEach(k => {
+    const el = document.getElementById('rb-' + k);
+    if (!el) return;
+    if (k === r) {
+      el.classList.add('selected');
+    } else {
+      el.classList.remove('selected');
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════
+// AGENT DOMAIN LOGIC
+// ══════════════════════════════════════════════════
+
+let totalCollected = 0;
+function collectItem(i, name, loc) {
+  const badge = document.getElementById('ci-' + i);
+  if (badge && badge.textContent !== 'Collected') {
+    badge.textContent = 'Collected';
+    badge.style.background = 'var(--green-bg)';
+    badge.style.color = 'var(--green)';
+    
+    totalCollected += 120;
+    const colDoneAmt = document.getElementById('col-done-amt');
+    if (colDoneAmt) colDoneAmt.textContent = '₹' + totalCollected;
+    const colCommission = document.getElementById('col-commission');
+    if (colCommission) colCommission.textContent = '₹' + Math.round(totalCollected * 0.02);
+    
+    showToast(`₹120 collected from ${name}`, 'success');
+  }
+}
+
+// ══════════════════════════════════════════════════
+// COUNT-UP ANIMATION
+// ══════════════════════════════════════════════════
+
+/**
+ * Animate all elements with [data-count-to] from 0 to their target value.
+ * Supports:
+ *   data-count-to      — target numeric value (required)
+ *   data-count-suffix  — string appended after number, e.g. "%"
+ *   data-count-decimals — number of decimal places (default 0)
+ *   data-count-duration — animation duration in ms (default 1000)
+ *   data-count-delay   — delay before starting in ms (default 0)
+ */
+function runCountUp() {
+  document.querySelectorAll('[data-count-to]').forEach(el => {
+    const target = parseFloat(el.dataset.countTo);
+    if (isNaN(target)) return;
+
+    const suffix = el.dataset.countSuffix || '';
+    const duration = parseInt(el.dataset.countDuration) || 1000;
+    const decimals = el.dataset.countDecimals !== undefined ? parseInt(el.dataset.countDecimals) : 0;
+    const delay = parseInt(el.dataset.countDelay) || 0;
+
+    // Build initial text: e.g. "0", "0.0", "0%"
+    const initialValue = decimals > 0 ? '0.' + '0'.repeat(decimals) : '0';
+    el.textContent = initialValue + suffix;
+
+    setTimeout(() => {
+      const startTime = performance.now();
+
+      function animate(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+
+        // Ease-out cubic
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = eased * target;
+
+        let formatted;
+        if (decimals > 0) {
+          formatted = current.toFixed(decimals);
+        } else {
+          formatted = Math.round(current).toLocaleString('en-IN');
+        }
+
+        el.textContent = formatted + suffix;
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }, delay);
+  });
+}
+
+// ══════════════════════════════════════════════════
+// KYC & AI SCORE
+// ══════════════════════════════════════════════════
+
+function runAIScore() {
+  const steps = [
+    'Checking device fingerprint & root status...',
+    'Analysing 6-month UPI transaction history...',
+    'Verifying income consistency patterns...',
+    'Checking SIM age & GPS stability...',
+    'Scanning for fraud signals & loan rings...',
+    'Analysing bank statement cash flow...',
+    'Running repayment prediction model...',
+    'Computing Trust Score — 47 signals...'
+  ];
+  
+  const icons = [
+    '✓ Device clean', '✓ UPI activity: High', '✓ Income: Consistent', 
+    '✓ GPS: Stable', '✓ No fraud detected', '✓ Cash flow: Good', 
+    '⚠ 1 existing EMI noted', 'Generating offer...'
+  ];
+
+  const prog = document.getElementById('ai-prog');
+  const lbl = document.getElementById('ai-step-lbl');
+  const pctEl = document.getElementById('ai-pct');
+  const checks = document.getElementById('ai-checks');
+  const doneBtn = document.getElementById('ai-score-done');
+  const circle = document.getElementById('ai-circle');
+
+  if (prog) prog.style.width = '0%';
+  if (checks) checks.innerHTML = '';
+  if (doneBtn) doneBtn.style.display = 'none';
+
+  let i = 0;
+  const timer = setInterval(() => {
+    if (i < steps.length) {
+      if (lbl) lbl.textContent = steps[i];
+      const pct = Math.round(((i + 1) / steps.length) * 100);
+      if (prog) prog.style.width = pct + '%';
+      if (pctEl) pctEl.textContent = pct + '%';
+
+      // Animate SVG circle
+      if (circle) {
+        const circumference = 2 * Math.PI * 70; // r=70
+        circle.style.strokeDasharray = circumference;
+        circle.style.strokeDashoffset = circumference - (circumference * pct / 100);
+      }
+      
+      if (checks) {
+        const chk = document.createElement('div');
+        chk.style.cssText = 'font-size:12px;color:var(--green);display:flex;align-items:center;gap:6px;animation:fadeInUp 0.3s ease;';
+        chk.innerHTML = `<i class="ti ti-check" style="font-size:14px;"></i>${icons[i]}`;
+        checks.appendChild(chk);
+      }
+      i++;
+    } else {
+      clearInterval(timer);
+      if (lbl) lbl.textContent = 'Analysis complete!';
+      if (doneBtn) doneBtn.style.display = 'block';
+      showToast('AI Trust Score calculated successfully!', 'success');
+    }
+  }, 700);
+}
+
+// ══════════════════════════════════════════════════
+// APP INITIALIZATION
+// ══════════════════════════════════════════════════
+
+window.addEventListener('load', () => {
+  buildSchedule();
+  // Check for existing auth token on load
+  if (authToken) {
+    // Optionally restore session
+  }
+  
+  // Register service worker for PWA support
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').then((reg) => {
+      console.log('SW registered, scope:', reg.scope);
+    }).catch((err) => {
+      console.log('SW registration failed:', err.message);
+    });
+  }
+});
+
+function buildSchedule() {
+  const targets = ['schedule-list', 'home-schedule-list', 'history-schedule-list'];
+  targets.forEach(id => {
+    const list = document.getElementById(id);
+    if (!list) return;
+    list.innerHTML = '';
+    const count = id === 'home-schedule-list' ? 5 : 20;
+    for (let i = 0; i < count; i++) {
+      const d = document.createElement('div');
+      d.className = 'list-item';
+      d.style.animation = 'staggerFadeIn 0.4s ease ' + (i * 60) + 'ms both';
+      const done = i < 5;
+      const iconClass = done ? 'green' : 'amber';
+      const iconType = done ? 'check' : 'clock';
+      
+      d.innerHTML = `
+        <div class="list-icon ${iconClass}"><i class="ti ti-${iconType}"></i></div>
+        <div class="list-body">
+          <div style="font-weight:600; font-size:14px; color:var(--text);">EMI — Day ${33 - i}</div>
+          <div style="font-size:12px; color:var(--text3); margin-top:2px;">May ${8 - i}, 2025</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-weight:700; color:${done ? 'var(--green)' : 'var(--text)'};">₹120</div>
+          <div style="font-size:11px; color:var(--text3);">${done ? 'Paid' : 'Upcoming'}</div>
+        </div>
+      `;
+      list.appendChild(d);
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════
+// AUTHENTICATION LOGIC
+// ══════════════════════════════════════════════════
+
+async function doLogin(role) {
+  const mobile = document.querySelector(`#screen-login-${role} input[type="tel"]`)?.value;
+  if (!mobile || mobile.length < 10) {
+    showToast('Please enter a valid 10-digit mobile number', 'error');
+    return;
+  }
+
+  showLoading('Sending OTP...');
+  const data = await apiFetch('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ mobile, role })
+  });
+
+  if (data && data.success) {
+    authToken = data.token;
+    localStorage.setItem('rupeefast_token', data.token);
+    currentUser = data.user;
+    showToast('OTP sent to ' + mobile, 'success');
+    showScreen(`screen-otp-${role}`);
+  }
+}
+
+async function verifyOTP(role) {
+  if (!currentUser) return;
+  showToast('Verifying OTP...', 'info');
+  await loadDashboard(role);
+}
+
+async function loadDashboard(role) {
+  if (!currentUser) return;
+  
+  const data = await apiFetch(`/user/${currentUser.id}/dashboard`);
+  if (data) {
+    showToast('Welcome ' + (currentUser.name || 'User') + '!', 'success');
+    if (role === 'borrower') {
+      showScreen('screen-b-home');
+      document.querySelectorAll('.b-name').forEach(el => el.textContent = currentUser.name || 'User');
+    } else if (role === 'investor') {
+      showScreen('screen-i-home');
+      document.querySelectorAll('.i-name').forEach(el => el.textContent = currentUser.name || 'Investor');
+    } else if (role === 'agent') {
+      showScreen('screen-a-home');
+    }
+  }
+}
+
+function logoutUser() {
+  authToken = null;
+  localStorage.removeItem('rupeefast_token');
+  currentUser = null;
+  showToast('Logged out successfully', 'info');
+  showScreen('screen-home');
+}
+
+async function submitLoan() {
+  if (!currentUser) return;
+  const amount = parseInt(document.getElementById('loan-range')?.value || 0);
+  const purposeEl = document.querySelector('.purpose-btn[style*="border:1.5px solid var(--primary)"]');
+  const purpose = purposeEl?.textContent?.trim() || 'Business';
+  const plans = ['Daily', 'Weekly', 'Monthly'];
+  let plan = 'Daily';
+  document.querySelectorAll('.plan-card').forEach((c, i) => {
+    if (c.classList.contains('selected')) plan = plans[i];
+  });
+
+  const data = await apiFetch('/loans/apply', {
+    method: 'POST',
+    body: JSON.stringify({ amount, plan, purpose }),
+    showLoader: true
+  });
+
+  if (data && data.success) {
+    showScreen('screen-b-success');
+  }
+}
+
+function acceptOffer() {
+  // Dedicated function for Offer screen — doesn't depend on apply-screen DOM elements
+  if (!currentUser) {
+    showToast('Please login first', 'error');
+    return;
+  }
+  showToast('Processing e-sign...', 'info');
+  setTimeout(() => {
+    showScreen('screen-b-success');
+  }, 1000);
+}
+
+// ══════════════════════════════════════════════════
+// GLOBAL HELPERS
+// ══════════════════════════════════════════════════
+
+function otpNext(el, nextId) {
+  if (el.value.length >= 1) {
+    const next = document.getElementById(nextId);
+    if (next) {
+      next.focus();
+      // Auto-submit when last OTP digit is entered
+      if (next.id.endsWith('4')) {
+        // Find the closest form and submit it
+        const form = next.closest('form');
+        if (form) {
+          setTimeout(() => {
+            form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', { cancelable: true }));
+          }, 200);
+        }
+      }
+    }
+  }
+}
+
+function copyCode() {
+  showToast('Referral code copied to clipboard!', 'success');
+}
+
+function shareRef(m) {
+  showToast(`Referral link shared via ${m}`, 'success');
+}
+
+// ══════════════════════════════════════════════════
+// INVESTOR WITHDRAW FUNCTIONS
+// ══════════════════════════════════════════════════
+
+function calcWithdraw(val) {
+  val = parseInt(val);
+  const amtEl = document.getElementById('wd-amt-val');
+  if (amtEl) amtEl.textContent = '₹' + val.toLocaleString('en-IN');
+  const sumEl = document.getElementById('wd-sum-amt');
+  if (sumEl) sumEl.textContent = '₹' + val.toLocaleString('en-IN');
+  // Update button text
+  const btn = document.querySelector('#screen-i-withdraw .btn-green');
+  if (btn) btn.textContent = 'Withdraw ₹' + val.toLocaleString('en-IN');
+}
+
+function processWithdraw() {
+  const amtEl = document.getElementById('wd-amt-val');
+  const amt = amtEl ? amtEl.textContent : '₹5,000';
+  showSuccess('Withdrawal Initiated!', `${amt} will be credited to your SBI account within 1-2 business days.`);
+}
+
+// ══════════════════════════════════════════════════
+// INVESTOR STATEMENT FUNCTIONS
+// ══════════════════════════════════════════════════
+
+let currentStatementIdx = 0;
+const statementMonths = ['2025-05', '2025-04', '2025-03', '2025-02', '2025-01'];
+
+function loadStatement() {
+  showToast('Statement loaded', 'success');
+}
+
+function prevStatement() {
+  const sel = document.getElementById('statement-month');
+  if (sel && sel.selectedIndex > 0) {
+    sel.selectedIndex = sel.selectedIndex - 1;
+    loadStatement();
+  }
+}
+
+function nextStatement() {
+  const sel = document.getElementById('statement-month');
+  if (sel && sel.selectedIndex < sel.options.length - 1) {
+    sel.selectedIndex = sel.selectedIndex + 1;
+    loadStatement();
+  }
+}
+
+// ══════════════════════════════════════════════════
+// RAZORPAY PAYMENT FUNCTIONS
+// ══════════════════════════════════════════════════
+
+/** Selected payment method for mandate */
+let selectedPaymentMethod = 'upi_autopay';
+
+/**
+ * Called when user clicks a payment method card on the pay screen.
+ */
+function selectPaymentMethod(el) {
+  // Update visual state
+  document.querySelectorAll('.payment-method-card').forEach(c => {
+    c.classList.remove('selected');
+    c.style.borderLeftColor = 'var(--border)';
+    const check = c.querySelector('.method-check');
+    if (check) {
+      check.style.borderColor = 'var(--border)';
+      check.style.background = 'transparent';
+      check.innerHTML = '';
+    }
+  });
+
+  el.classList.add('selected');
+  el.style.borderLeftColor = 'var(--primary)';
+  const check = el.querySelector('.method-check');
+  if (check) {
+    check.style.borderColor = 'var(--primary)';
+    check.style.background = 'var(--primary)';
+    check.innerHTML = '<i class="ti ti-check" style="font-size:12px;color:#fff;"></i>';
+  }
+
+  selectedPaymentMethod = el.dataset.method || 'upi_autopay';
+}
+
+/**
+ * Load active mandates for the current user and show card if any.
+ */
+async function loadActiveMandate() {
+  if (!currentUser || !authToken) return;
+
+  const data = await apiFetch('/payments/mandates', { showLoader: false });
+  if (!data || !data.mandates) return;
+
+  const active = data.mandates.find(m => m.status === 'active');
+  const card = document.getElementById('active-mandate-card');
+  const statusText = document.getElementById('mandate-status-text');
+
+  if (active && card) {
+    card.style.display = 'block';
+    const methodLabel = active.method === 'upi_autopay' ? 'UPI AutoPay' : 'NACH';
+    const freqLabel = active.method === 'nach' ? `₹${active.amount}/month` : `₹${active.amount}/${active.frequency}`;
+    if (statusText) statusText.textContent = `${methodLabel} · ${freqLabel} · ${active.remaining_cycles} remaining`;
+  }
+}
+
+/**
+ * Initiate Razorpay payment flow for setting up UPI AutoPay or NACH mandate.
+ * Creates a plan and subscription on the backend, then opens Razorpay Checkout.
+ */
+async function initiateRazorpayPayment() {
+  if (!currentUser || !authToken) {
+    showToast('Please login first', 'error');
+    return;
+  }
+
+  showLoading('Setting up payment...');
+
+  try {
+    // 1. Create a plan on Razorpay
+    const amount = 120; // ₹120 per EMI
+    const frequency = selectedPaymentMethod === 'nach' ? 'monthly' : 'daily';
+    const totalCycles = selectedPaymentMethod === 'nach' ? 12 : 100;
+    const label = `RupeeFast ${frequency} EMI — ₹${amount}`;
+
+    const planData = await apiFetch('/payments/create-plan', {
+      method: 'POST',
+      body: JSON.stringify({ frequency, amountPaise: amount * 100, label }),
+      showLoader: false
+    });
+
+    if (!planData || !planData.plan) {
+      hideLoading();
+      // Fallback to mock mode if Razorpay not configured
+      showToast('Payment gateway connecting... using demo mode', 'info');
+      setTimeout(() => {
+        showSuccess('AutoPay Set Up!', `Your ${selectedPaymentMethod === 'nach' ? 'NACH mandate' : 'UPI AutoPay'} of ₹${amount}/${frequency === 'daily' ? 'day' : 'month'} is active.`);
+      }, 1000);
+      return;
+    }
+
+    // 2. Create subscription
+    const subData = await apiFetch('/payments/create-subscription', {
+      method: 'POST',
+      body: JSON.stringify({
+        planId: planData.plan.id,
+        totalCycles,
+        method: selectedPaymentMethod,
+        amount,
+        frequency
+      }),
+      showLoader: false
+    });
+
+    if (!subData || !subData.subscription) {
+      hideLoading();
+      showToast('Failed to create payment mandate', 'error');
+      return;
+    }
+
+    hideLoading();
+
+    // 3. Open Razorpay Checkout for mandate authorization
+    const options = {
+      key: planData.key_id || window.RAZORPAY_KEY_ID || '',
+      subscription_id: subData.subscription.id,
+      name: 'RupeeFast',
+      description: `${frequency} repayment — ₹${amount}`,
+      image: '/favicon.ico',
+      prefill: {
+        contact: currentUser.mobile || '',
+        name: currentUser.name || ''
+      },
+      theme: { color: '#10b981' },
+      handler: async function (response) {
+        showLoading('Verifying mandate...');
+        // Verify the signature on backend
+        const verifyData = await apiFetch('/payments/verify', {
+          method: 'POST',
+          body: JSON.stringify({
+            razorpay_subscription_id: response.razorpay_subscription_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            mandate_id: subData.mandate_id
+          }),
+          showLoader: false
+        });
+
+        hideLoading();
+
+        if (verifyData && verifyData.success) {
+          showSuccess('Mandate Activated!', 'Your recurring payment mandate has been set up successfully. Future EMIs will be collected automatically.');
+          loadActiveMandate();
+        } else {
+          showToast('Verification failed. Please contact support.', 'error');
+        }
+      },
+      modal: {
+        ondismiss: function () {
+          showToast('Payment setup cancelled', 'info');
+        }
+      }
+    };
+
+    // Open Razorpay Checkout
+    const rzp = new Razorpay(options);
+    rzp.open();
+
+  } catch (err) {
+    hideLoading();
+    console.error('Razorpay error:', err);
+    showToast('Payment setup failed. Try again later.', 'error');
+  }
+}
+
+/**
+ * Cancel the currently active mandate.
+ */
+async function cancelActiveMandate() {
+  if (!currentUser || !authToken) {
+    showToast('Please login first', 'error');
+    return;
+  }
+
+  const data = await apiFetch('/payments/mandates', { showLoader: false });
+  if (!data || !data.mandates) return;
+
+  const active = data.mandates.find(m => m.status === 'active');
+  if (!active) {
+    showToast('No active mandate found', 'info');
+    return;
+  }
+
+  showLoading('Cancelling mandate...');
+  const result = await apiFetch('/payments/cancel-mandate', {
+    method: 'POST',
+    body: JSON.stringify({ mandate_id: active.id }),
+    showLoader: false
+  });
+
+  hideLoading();
+
+  if (result && result.success) {
+    showToast('Mandate cancelled successfully', 'success');
+    const card = document.getElementById('active-mandate-card');
+    if (card) card.style.display = 'none';
+  }
+}
+
+// ══════════════════════════════════════════════════
+// MANDATE MANAGEMENT FUNCTIONS
+// ══════════════════════════════════════════════════
+
+/** Currently selected active mandate ID */
+let currentMandateId = null;
+
+/**
+ * Load all mandates for the current user and render them on the Manage Mandates screen.
+ */
+async function loadMandates() {
+  if (!currentUser || !authToken) {
+    showToast('Please login first', 'error');
+    return;
+  }
+
+  // Reset selected mandate ID — gets set again if active/paused found
+  currentMandateId = null;
+
+  const loadingEl = document.getElementById('mandates-loading');
+  const emptyEl = document.getElementById('mandates-empty');
+  const activeContainer = document.getElementById('mandates-active-container');
+  const historySection = document.getElementById('mandates-history');
+
+  if (loadingEl) loadingEl.style.display = 'block';
+  if (emptyEl) emptyEl.style.display = 'none';
+  if (activeContainer) activeContainer.style.display = 'none';
+  if (historySection) historySection.style.display = 'none';
+
+  const data = await apiFetch('/payments/mandates', { showLoader: false });
+
+  if (loadingEl) loadingEl.style.display = 'none';
+
+  if (!data || !data.mandates || data.mandates.length === 0) {
+    if (emptyEl) emptyEl.style.display = 'block';
+    return;
+  }
+
+  const mandates = data.mandates;
+  const active = mandates.find(m => m.status === 'active' || m.status === 'paused');
+
+  // Update profile badge
+  const badge = document.getElementById('mandate-profile-badge');
+  if (badge) {
+    if (active) {
+      badge.style.display = 'inline';
+      badge.textContent = active.status === 'paused' ? 'Paused' : 'Active';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  // Show active/paused mandate card
+  if (active) {
+    currentMandateId = active.id;
+    if (activeContainer) activeContainer.style.display = 'block';
+
+    const methodLabel = active.method === 'nach' ? 'NACH' : 'UPI AutoPay';
+    const freqLabel = active.method === 'nach' ? 'Monthly' : (active.frequency === 'daily' ? 'Daily' : active.frequency === 'weekly' ? 'Weekly' : 'Monthly');
+    const isPaused = active.status === 'paused';
+
+    setEl('ma-method', methodLabel);
+    setEl('ma-status-badge', isPaused ? '● Paused' : '● Active');
+    setEl('ma-amount', '₹' + parseInt(active.amount).toLocaleString('en-IN'));
+    setEl('ma-frequency', freqLabel);
+    setEl('ma-remaining', (active.remaining_cycles || 0) + ' / ' + (active.total_cycles || 100));
+    setEl('ma-activated', active.activated_at ? new Date(active.activated_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—');
+
+    const pauseBtn = document.getElementById('ma-pause-btn');
+    const resumeBtn = document.getElementById('ma-resume-btn');
+    if (pauseBtn) pauseBtn.style.display = isPaused ? 'none' : 'flex';
+    if (resumeBtn) resumeBtn.style.display = isPaused ? 'flex' : 'none';
+  }
+
+  // Show mandate history (all mandates including inactive)
+  if (historySection) historySection.style.display = 'block';
+  const list = document.getElementById('mandates-list');
+  if (!list) return;
+
+  list.innerHTML = '';
+  mandates.forEach(m => {
+    const methodLabel = m.method === 'nach' ? 'NACH' : 'UPI AutoPay';
+    const statusColors = {
+      active: 'var(--green)',
+      paused: 'var(--amber)',
+      pending: 'var(--blue)',
+      cancelled: 'var(--red)',
+      halted: 'var(--red)',
+      completed: 'var(--text3)'
+    };
+    const statusIcons = {
+      active: 'ti ti-shield-check',
+      paused: 'ti ti-player-pause',
+      pending: 'ti ti-clock',
+      cancelled: 'ti ti-x-circle',
+      halted: 'ti ti-alert-triangle',
+      completed: 'ti ti-check-circle'
+    };
+    const color = statusColors[m.status] || 'var(--text3)';
+    const icon = statusIcons[m.status] || 'ti ti-circle';
+
+    const item = document.createElement('div');
+    item.style.cssText = 'background:var(--card);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;border:1px solid var(--border);';
+    item.innerHTML = `
+      <div style="width:40px;height:40px;border-radius:10px;background:${color}15;display:flex;align-items:center;justify-content:center;font-size:18px;color:${color};flex-shrink:0;"><i class="${icon}"></i></div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:600;font-size:14px;color:var(--text);display:flex;align-items:center;gap:6px;">
+          ${methodLabel}
+          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:${color}18;color:${color};font-weight:600;">${m.status.charAt(0).toUpperCase() + m.status.slice(1)}</span>
+        </div>
+        <div style="font-size:12px;color:var(--text3);margin-top:3px;">₹${parseInt(m.amount).toLocaleString('en-IN')} · ${m.frequency || 'daily'} · ${m.remaining_cycles || 0} left</div>
+      </div>
+      <i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px;"></i>
+    `;
+    list.appendChild(item);
+  });
+}
+
+/** Helper to safely set textContent */
+function setEl(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+
+/**
+ * Pause or resume the currently selected active mandate.
+ */
+async function toggleMandateStatus(action) {
+  if (!currentMandateId || !currentUser) return;
+
+  const endpoint = action === 'pause' ? '/payments/pause-mandate' : '/payments/resume-mandate';
+  const loadingMsg = action === 'pause' ? 'Pausing mandate...' : 'Resuming mandate...';
+
+  showLoading(loadingMsg);
+  const result = await apiFetch(endpoint, {
+    method: 'POST',
+    body: JSON.stringify({ mandate_id: currentMandateId }),
+    showLoader: false
+  });
+  hideLoading();
+
+  if (result && result.success) {
+    showToast(`Mandate ${action === 'pause' ? 'paused' : 'resumed'} successfully`, 'success');
+    loadMandates(); // Refresh the view
+  }
+}
+
+/**
+ * Cancel the currently selected active mandate.
+ */
+async function cancelMandateById() {
+  if (!currentMandateId || !currentUser) return;
+
+  if (!confirm('Are you sure you want to cancel this mandate? Future EMIs will not be collected automatically.')) return;
+
+  showLoading('Cancelling mandate...');
+  const result = await apiFetch('/payments/cancel-mandate', {
+    method: 'POST',
+    body: JSON.stringify({ mandate_id: currentMandateId }),
+    showLoader: false
+  });
+  hideLoading();
+
+  if (result && result.success) {
+    showToast('Mandate cancelled', 'success');
+    currentMandateId = null;
+    loadMandates(); // Refresh the view
+  }
+}
+
+function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input?.value?.trim();
+  if (!msg) return;
+  
+  const wrap = document.getElementById('chat-wrap');
+  if (!wrap) return;
+  
+  // Add user message
+  const userDiv = document.createElement('div');
+  userDiv.className = 'chat-msg user';
+  userDiv.textContent = msg;
+  wrap.appendChild(userDiv);
+  input.value = '';
+  
+  // Auto-reply with mock AI response
+  setTimeout(() => {
+    const botDiv = document.createElement('div');
+    botDiv.className = 'chat-msg bot';
+    
+    const responses = [
+      'Your current loan balance is ₹8,700 with 67 remaining EMIs of ₹120 each.',
+      'You are eligible for a top-up loan of up to ₹15,000 based on your repayment history.',
+      'Your next EMI of ₹120 is due tomorrow at 9 AM via UPI AutoPay.',
+      'Your Trust Score is 74/100. Timely repayment of 3 more EMIs will increase it to 80.',
+      'To apply for a higher loan, complete your current loan first and maintain a good repayment record.'
+    ];
+    botDiv.textContent = responses[Math.floor(Math.random() * responses.length)];
+    wrap.appendChild(botDiv);
+    wrap.scrollTop = wrap.scrollHeight;
+  }, 500);
+  
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+

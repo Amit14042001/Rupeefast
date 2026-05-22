@@ -1,0 +1,26 @@
+    <!-- ════════════════════════════════════════
+         BORROWER: REPAYMENT SCHEDULE
+    ════════════════════════════════════════ -->
+    <div class="screen" id="screen-b-schedule">
+      <div class="top-nav"><button class="back-btn" onclick="showBTab('screen-b-home',null)" aria-label="Go back"><i class="ti ti-arrow-left"></i></button><h2>Repayment Schedule</h2></div>
+      <div class="scroll-body">
+        <div class="card card-tint-green" style="display:flex;justify-content:space-between;">
+          <div>
+            <p style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;">Total Paid</p>
+            <div style="font-size:22px;font-weight:800;color:var(--green);">₹4,300</div>
+          </div>
+          <div style="text-align:right;">
+            <p style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;">Remaining</p>
+            <div style="font-size:22px;font-weight:800;color:var(--amber);">₹7,700</div>
+          </div>
+        </div>
+        <div class="section-hdr"><h3>Payment Calendar</h3></div>
+        <div id="schedule-list"></div>
+      </div>
+      <div class="bottom-nav g4">
+        <button class="nav-item" onclick="showBTab('screen-b-home',this)"><i class="ti ti-smart-home"></i><span>Home</span></button>
+        <button class="nav-item" onclick="showBTab('screen-b-apply',this)"><i class="ti ti-circle-plus"></i><span>Apply</span></button>
+        <button class="nav-item active" onclick="showBTab('screen-b-schedule',this)"><i class="ti ti-calendar"></i><span>Schedule</span></button>
+        <button class="nav-item" onclick="showBTab('screen-b-profile',this)"><i class="ti ti-user-circle"></i><span>Account</span></button>
+      </div>
+    </div>

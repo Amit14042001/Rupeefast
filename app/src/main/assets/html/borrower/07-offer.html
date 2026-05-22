@@ -1,0 +1,88 @@
+    <!-- ════════════════════════════════════════
+         BORROWER: LOAN OFFER & E-SIGN
+    ════════════════════════════════════════ -->
+    <div class="screen" id="screen-b-offer">
+      <div class="top-nav"><button class="back-btn" onclick="showScreen('screen-b-ai-score')" aria-label="Go back"><i class="ti ti-arrow-left"></i></button><h2>Your Loan Offer</h2></div>
+      <div class="scroll-body" style="background:var(--surface);">
+        <div style="text-align:center;padding:30px 24px 16px;">
+          <div style="width:72px;height:72px;background:var(--green-bg);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:34px;color:var(--green);"><i class="ti ti-file-check"></i></div>
+          <h2 style="font-size:22px;font-weight:700;">Loan Approved!</h2>
+          <p style="font-size:14px;color:var(--text3);margin-top:6px;">Based on your Trust Score, here's your custom offer</p>
+        </div>
+
+        <!-- Offer Summary -->
+        <div class="card card-tint-green" style="border:none;padding:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <p style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;">Loan Amount</p>
+              <div style="font-size:28px;font-weight:800;color:var(--green);margin-top:4px;">₹8,000</div>
+            </div>
+            <div style="width:56px;height:56px;background:var(--green-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--green);"><i class="ti ti-thumb-up"></i></div>
+          </div>
+        </div>
+
+        <!-- Offer Details -->
+        <div class="card" style="margin-top:12px;">
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-light);">
+            <span style="font-size:13px;color:var(--text3);">Interest Rate</span>
+            <span style="font-weight:700;color:var(--text);">20% p.a. (flat)</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-light);">
+            <span style="font-size:13px;color:var(--text3);">Processing Fee</span>
+            <span style="font-weight:700;color:var(--text);">5% (₹400)</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-light);">
+            <span style="font-size:13px;color:var(--text3);">Reserve Fund</span>
+            <span style="font-weight:700;color:var(--text);">5% (₹400)</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-light);">
+            <span style="font-size:13px;color:var(--text3);">Disbursal Amount</span>
+            <span style="font-weight:700;color:var(--green);font-size:16px;">₹7,200</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-light);">
+            <span style="font-size:13px;color:var(--text3);">Repayment Plan</span>
+            <span style="font-weight:700;color:var(--text);">Daily (₹120/day)</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;">
+            <span style="font-size:13px;color:var(--text3);">Tenure</span>
+            <span style="font-weight:700;color:var(--text);">100 Days</span>
+          </div>
+        </div>
+
+        <!-- E-Sign Section -->
+        <div class="card" style="margin-top:12px;border:1.5px solid var(--primary);background:var(--primary-bg);">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="width:40px;height:40px;background:var(--primary);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;flex-shrink:0;"><i class="ti ti-pencil"></i></div>
+            <div>
+              <div style="font-weight:700;font-size:14px;color:var(--primary);">E-Sign Agreement</div>
+              <p style="font-size:12px;color:var(--text2);margin-top:6px;line-height:1.5;">By accepting, you agree to the Loan Agreement terms. An OTP will be sent to your registered mobile number to authorize this contract.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checklist -->
+        <div class="card" style="margin-top:12px;">
+          <div style="font-weight:600;font-size:14px;margin-bottom:12px;">Terms Summary</div>
+          <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;">
+            <i class="ti ti-check" style="font-size:16px;color:var(--green);margin-top:1px;"></i>
+            <span style="font-size:12px;color:var(--text2);">AutoPay mandate will be set up for daily EMI collection</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;">
+            <i class="ti ti-check" style="font-size:16px;color:var(--green);margin-top:1px;"></i>
+            <span style="font-size:12px;color:var(--text2);">Late payment fee: ₹25 per day after 24hr grace period</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;">
+            <i class="ti ti-check" style="font-size:16px;color:var(--green);margin-top:1px;"></i>
+            <span style="font-size:12px;color:var(--text2);">Foreclosure allowed anytime with 0% penalty</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <i class="ti ti-check" style="font-size:16px;color:var(--green);margin-top:1px;"></i>
+            <span style="font-size:12px;color:var(--text2);">Credit Bureau reporting — timely payments boost your score</span>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <button class="btn btn-primary" style="margin:24px 12px 8px;" onclick="acceptOffer()" id="offer-accept-btn"><i class="ti ti-signature"></i> Accept & E-Sign →</button>
+        <button class="btn btn-ghost" style="margin:0 12px 20px;" onclick="showToast('Offer declined. You can re-apply anytime.','info')">Decline Offer</button>
+      </div>
+    </div>

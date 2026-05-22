@@ -1,0 +1,29 @@
+# ──────────────────────────────────────────────
+# RupeeFast — Prometheus Configuration
+# ──────────────────────────────────────────────
+# Scrapes metrics from the backend /api/metrics endpoint
+# and provides default retention & alerting rules.
+# ──────────────────────────────────────────────
+
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'rupeefast-backend'
+    static_configs:
+      - targets: ['backend:3000']
+    metrics_path: '/api/metrics'
+    # Relabel to attach environment label
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: environment
+        replacement: 'production'
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+# ── Alerting rules (uncomment when ready) ──
+# rule_files:
+#   - 'alerts.yml'

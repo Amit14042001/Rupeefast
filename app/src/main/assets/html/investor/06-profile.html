@@ -1,0 +1,24 @@
+    <!-- ════════════════════════════════════════
+         INVESTOR: PROFILE
+    ════════════════════════════════════════ -->
+    <div class="screen" id="screen-i-profile">
+      <div class="top-nav" style="background:var(--green);"><button class="back-btn" onclick="showITab('screen-i-home',null)" aria-label="Go back"><i class="ti ti-arrow-left"></i></button><h2>My Profile</h2></div>
+      <div class="scroll-body" style="background:var(--surface);">
+        <div style="text-align:center;padding:30px 24px;">
+          <div style="width:72px;height:72px;border-radius:50%;background:var(--green-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px;color:var(--green);font-weight:700;">AS</div>
+          <h2 class="i-name" style="font-size:20px;font-weight:700;">Anita Sharma</h2>
+          <p style="font-size:13px;color:var(--text3);">+91 9988776655</p>
+        </div>
+        <div class="list-item"><div class="list-icon green"><i class="ti ti-building-bank"></i></div><div class="list-body" style="font-weight:600;font-size:14px;">Linked Bank Account</div><span class="badge badge-blue">SBI</span></div>
+        <div class="list-item" onclick="showScreen('screen-i-statement')"><div class="list-icon green"><i class="ti ti-file-text"></i></div><div class="list-body" style="font-weight:600;font-size:14px;">Tax Statements</div><i class="ti ti-chevron-right" style="color:var(--text3);"></i></div>
+        <div class="list-item" onclick="showScreen('screen-i-referral')"><div class="list-icon purple"><i class="ti ti-gift"></i></div><div class="list-body" style="font-weight:600;font-size:14px;">Refer a Friend</div><i class="ti ti-chevron-right" style="color:var(--text3);"></i></div>
+        <div class="list-item"><div class="list-icon green"><i class="ti ti-help"></i></div><div class="list-body" style="font-weight:600;font-size:14px;">Help & Support</div><i class="ti ti-chevron-right" style="color:var(--text3);"></i></div>
+        <div class="list-item" onclick="logoutUser()"><div class="list-icon red"><i class="ti ti-logout"></i></div><div class="list-body" style="font-weight:600;font-size:14px;color:var(--red);">Logout</div></div>
+      </div>
+      <div class="bottom-nav g4">
+        <button class="nav-item" onclick="showITab('screen-i-home',this)"><i class="ti ti-layout-dashboard"></i><span>Overview</span></button>
+        <button class="nav-item" onclick="showITab('screen-i-invest',this)"><i class="ti ti-plus"></i><span>Invest</span></button>
+        <button class="nav-item" onclick="showITab('screen-i-loans',this)"><i class="ti ti-users"></i><span>Borrowers</span></button>
+        <button class="nav-item active" onclick="showITab('screen-i-profile',this)"><i class="ti ti-user"></i><span>Profile</span></button>
+      </div>
+    </div>

@@ -1,0 +1,79 @@
+    <!-- ════════════════════════════════════════
+         BORROWER: HOME DASHBOARD
+    ════════════════════════════════════════ -->
+    <div class="screen" id="screen-b-home">
+      <div class="top-nav" style="background:var(--primary); border-bottom:none;">
+        <div style="flex:1;">
+          <p style="font-size:11px; opacity:0.7; margin-bottom:2px;">Welcome back,</p>
+          <h2 class="b-name" style="font-size:18px; font-weight:700;">Ramesh Kumar</h2>
+        </div>
+        <div style="display:flex; gap:14px; align-items:center;">
+          <i class="ti ti-bell" style="font-size:22px; cursor:pointer;" onclick="showScreen('screen-b-notif')" role="button" tabindex="0" aria-label="Notifications"></i>
+          <div style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700;">RK</div>
+        </div>
+      </div>
+      <div class="scroll-body">
+        <div class="hero-card">
+          <p style="font-size:11px; opacity:0.8; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Active Loan Balance</p>
+          <div style="display:flex; align-items:baseline; gap:4px; margin-top:4px;">
+            <span style="font-size:16px; font-weight:600;">₹</span>
+            <span data-count-to="8700" style="font-size:32px; font-weight:800; letter-spacing:-0.5px;">8,700</span>
+          </div>
+          <div class="progress-bar" style="margin-top:20px; background:rgba(255,255,255,0.2);">
+            <div class="progress-fill" style="width:32%; background:#4ADE80;"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:11px; opacity:0.8;">
+            <span>₹<span data-count-to="4300">4,300</span> repaid</span>
+            <span>68% remaining</span>
+          </div>
+          <button class="btn" style="background:#fff; color:var(--primary); margin:20px 0 0; padding:12px; font-size:13px; font-weight:700;" onclick="showScreen('screen-b-pay')" aria-label="Pay 120 rupees today">Pay ₹120 Today</button>
+        </div>
+
+        <div class="metric-grid">
+          <div class="metric" onclick="showScreen('screen-b-score')" role="button" tabindex="0" aria-label="View trust score">
+            <div class="label">Trust Score</div>
+            <div class="value green"><span data-count-to="74">74</span> <span style="font-size:12px; color:var(--text3); font-weight:400;">/ 100</span></div>
+            <div class="sub">Level: Bronze 🥉</div>
+          </div>
+          <div class="metric" onclick="showScreen('screen-b-loyalty')" role="button" tabindex="0" aria-label="View loyalty levels">
+            <div class="label">Daily Limit</div>
+            <div class="value blue">₹<span data-count-to="12000">12,000</span></div>
+            <div class="sub">Next: Silver 🥈</div>
+          </div>
+        </div>
+
+        <div class="section-hdr"><h3>Quick Actions</h3></div>
+        <div class="card" style="padding:8px 0;">
+          <div style="display:grid; grid-template-columns:repeat(4,1fr);">
+            <div class="nav-item" onclick="showScreen('screen-b-apply')" role="button" tabindex="0" aria-label="Apply for loan">
+              <div style="width:48px; height:48px; border-radius:14px; background:var(--primary-bg); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:22px;"><i class="ti ti-plus"></i></div>
+              <span>Apply</span>
+            </div>
+            <div class="nav-item" onclick="showScreen('screen-b-history')" role="button" tabindex="0" aria-label="View loan history">
+              <div style="width:48px; height:48px; border-radius:14px; background:var(--green-bg); color:var(--green); display:flex; align-items:center; justify-content:center; font-size:22px;"><i class="ti ti-history"></i></div>
+              <span>History</span>
+            </div>
+            <div class="nav-item" onclick="showScreen('screen-b-help')" role="button" tabindex="0" aria-label="Chat with AI assistant">
+              <div style="width:48px; height:48px; border-radius:14px; background:var(--amber-bg); color:var(--amber); display:flex; align-items:center; justify-content:center; font-size:22px;"><i class="ti ti-message-dots"></i></div>
+              <span>Chat</span>
+            </div>
+            <div class="nav-item" onclick="showScreen('screen-b-refer')" role="button" tabindex="0" aria-label="Refer a friend">
+              <div style="width:48px; height:48px; border-radius:14px; background:var(--purple-bg); color:var(--purple); display:flex; align-items:center; justify-content:center; font-size:22px;"><i class="ti ti-share"></i></div>
+              <span>Refer</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-hdr"><h3>Upcoming Collections</h3></div>
+        <div id="home-schedule-list">
+          <!-- Populated by app.js -->
+        </div>
+      </div>
+
+      <div class="bottom-nav g4">
+        <button class="nav-item active" onclick="showBTab('screen-b-home',this)"><i class="ti ti-smart-home"></i><span>Home</span></button>
+        <button class="nav-item" onclick="showBTab('screen-b-apply',this)"><i class="ti ti-circle-plus"></i><span>Apply</span></button>
+        <button class="nav-item" onclick="showBTab('screen-b-schedule',this)"><i class="ti ti-calendar"></i><span>Schedule</span></button>
+        <button class="nav-item" onclick="showBTab('screen-b-profile',this)"><i class="ti ti-user-circle"></i><span>Account</span></button>
+      </div>
+    </div>

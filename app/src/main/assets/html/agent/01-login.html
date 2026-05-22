@@ -1,0 +1,27 @@
+    <!-- ════════════════════════════════════════
+         AGENT: LOGIN
+    ════════════════════════════════════════ -->
+    <div class="screen" id="screen-login-agent">
+      <div class="top-nav" style="background:var(--amber);">
+        <button class="back-btn" onclick="showScreen('screen-home')" aria-label="Go back"><i class="ti ti-arrow-left"></i></button>
+        <h2>Agent Portal</h2>
+      </div>
+      <div class="scroll-body" style="background:var(--surface);">
+        <div style="padding:40px 24px; text-align:center;">
+          <div style="width:60px; height:60px; background:var(--amber-bg); border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px; color:var(--amber);">
+            <i class="ti ti-map-pin"></i>
+          </div>
+          <h2 style="font-size:22px; font-weight:700;">Field Agent Access</h2>
+          <p style="font-size:14px; color:var(--text3); margin-top:6px;">Manage collections and verifications</p>
+        </div>
+        <div style="padding:0 24px;">
+          <form onsubmit="doLogin('agent');return false" style="margin:0">
+          <div class="card" style="margin:0; padding:12px; border-radius:var(--radius-sm);">
+            <label for="mobile-agent" style="display:block; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; margin-bottom:8px;">Agent ID / Mobile</label>
+            <input type="tel" id="mobile-agent" name="mobile" placeholder="Enter mobile number" maxlength="10" style="width:100%; border:none; outline:none; font-size:16px; font-weight:600; letter-spacing:1px;">
+          </div>
+          <button type="submit" class="btn" style="background:var(--amber); color:#fff; margin:24px 0 0;">Request Access</button>
+          </form>
+        </div>
+      </div>
+    </div>

@@ -1,0 +1,9 @@
+{
+  "name": "rupeefast-html",
+  "private": true,
+  "description": "Build tooling for RupeeFast HTML screens",
+  "scripts": {
+    "build": "node build-html.js",
+    "watch": "node -e \"const fs=require('fs');const {exec}=require('child_process');const dir='html/';console.log('Watching html/ for changes...');fs.watch(dir,{recursive:true},()=>{exec('node build-html.js',(e,o)=>{if(o)console.log(o.trim())})})\""
+  }
+}

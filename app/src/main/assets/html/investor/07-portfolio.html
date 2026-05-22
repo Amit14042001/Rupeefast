@@ -1,0 +1,84 @@
+    <!-- ════════════════════════════════════════
+         INVESTOR: PORTFOLIO DETAIL
+    ════════════════════════════════════════ -->
+    <div class="screen" id="screen-i-portfolio">
+      <div class="top-nav" style="background:var(--green);"><button class="back-btn" onclick="showScreen('screen-i-home')" aria-label="Go back"><i class="ti ti-arrow-left"></i></button><h2>Portfolio Detail</h2></div>
+      <div class="scroll-body">
+        <!-- Portfolio Value Hero -->
+        <div class="hero-card" style="background:linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);text-align:center;">
+          <p style="font-size:11px;opacity:0.8;font-weight:600;text-transform:uppercase;">Portfolio Value</p>
+          <div style="font-size:36px;font-weight:800;margin-top:4px;">₹45,200</div>
+          <div style="display:flex;gap:12px;justify-content:center;margin-top:14px;">
+            <div><div style="font-size:14px;font-weight:700;">₹1,455</div><div style="font-size:10px;opacity:0.7;">This Month</div></div>
+            <div style="width:1px;background:rgba(255,255,255,0.2);"></div>
+            <div><div style="font-size:14px;font-weight:700;">18.4%</div><div style="font-size:10px;opacity:0.7;">Annual ROI</div></div>
+            <div style="width:1px;background:rgba(255,255,255,0.2);"></div>
+            <div><div style="font-size:14px;font-weight:700;">92</div><div style="font-size:10px;opacity:0.7;">Live Loans</div></div>
+          </div>
+        </div>
+
+        <!-- Performance Graph Placeholder -->
+        <div class="card" style="padding:20px;margin-top:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 style="font-size:13px;font-weight:700;color:var(--text);">Returns Trend (Last 6 months)</h3>
+            <select name="portfolio_period" aria-label="Select period" style="font-size:11px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-family:inherit;">
+              <option>6M</option>
+              <option>1Y</option>
+              <option>All</option>
+            </select>
+          </div>
+          <!-- SVG Bar Chart -->
+          <div style="display:flex;align-items:flex-end;gap:8px;height:140px;padding:0 4px;">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div style="width:100%;background:var(--green-bg);border-radius:6px 6px 0 0;height:60px;transition:all 0.3s ease;"></div>
+              <span style="font-size:9px;color:var(--text3);font-weight:600;">Dec</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div style="width:100%;background:var(--green-bg);border-radius:6px 6px 0 0;height:80px;transition:all 0.3s ease;"></div>
+              <span style="font-size:9px;color:var(--text3);font-weight:600;">Jan</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div style="width:100%;background:var(--green-bg);border-radius:6px 6px 0 0;height:95px;transition:all 0.3s ease;"></div>
+              <span style="font-size:9px;color:var(--text3);font-weight:600;">Feb</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div style="width:100%;background:var(--green-bg);border-radius:6px 6px 0 0;height:110px;transition:all 0.3s ease;"></div>
+              <span style="font-size:9px;color:var(--text3);font-weight:600;">Mar</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div style="width:100%;background:var(--green-bg);border-radius:6px 6px 0 0;height:130px;transition:all 0.3s ease;"></div>
+              <span style="font-size:9px;color:var(--text3);font-weight:600;">Apr</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div style="width:100%;background:linear-gradient(180deg,var(--green-light),var(--green));border-radius:6px 6px 0 0;height:140px;transition:all 0.3s ease;"></div>
+              <span style="font-size:9px;color:var(--text);font-weight:700;">May</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Allocation Breakdown -->
+        <div class="section-hdr"><h3>Allocation Breakdown</h3></div>
+        <div class="card" style="margin-top:8px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+            <div style="width:10px;height:10px;border-radius:4px;background:var(--green);"></div>
+            <div style="flex:1;"><div style="font-weight:600;font-size:13px;">SAFE Bucket</div><div style="font-size:11px;color:var(--text3);">₹32,000 · 70.8%</div></div>
+            <div style="font-weight:700;color:var(--green);">14% ROI</div>
+          </div>
+          <div class="progress-bar" style="height:8px;"><div class="progress-fill green" style="width:71%;"></div></div>
+        </div>
+        <div class="card" style="margin-top:8px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+            <div style="width:10px;height:10px;border-radius:4px;background:var(--amber);"></div>
+            <div style="flex:1;"><div style="font-weight:600;font-size:13px;">MODERATE Bucket</div><div style="font-size:11px;color:var(--text3);">₹13,200 · 29.2%</div></div>
+            <div style="font-weight:700;color:var(--amber);">22% ROI</div>
+          </div>
+          <div class="progress-bar" style="height:8px;"><div class="progress-fill" style="width:29%;background:var(--amber);"></div></div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="metric-grid" style="margin-top:12px;">
+          <div class="metric"><div class="label">Default Rate</div><div class="value amber">0.8%</div><div class="sub">Industry avg: 3.2%</div></div>
+          <div class="metric"><div class="label">Avg Loan Size</div><div class="value blue">₹491</div><div class="sub">Per borrower</div></div>
+        </div>
+      </div>
+    </div>

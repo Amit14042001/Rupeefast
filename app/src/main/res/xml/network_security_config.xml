@@ -1,14 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
+    <!-- ── Base config: cleartext traffic blocked, trust system CAs ── -->
     <base-config cleartextTrafficPermitted="false">
         <trust-anchors>
             <certificates src="system" />
         </trust-anchors>
     </base-config>
-    <!-- Allow Anthropic API for AI chat -->
+
+    <!-- ── Domain-specific configs ── -->
+
+    <!-- Production API server with SSL pinning -->
+    <!-- In production, replace hash with your actual certificate's SHA-256 pin -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">api.rupeefast.com</domain>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+        <!-- SSL Pinning: pin the server's certificate public key.
+             Generate with: openssl s_client -connect api.rupeefast.com:443 -servername api.rupeefast.com | openssl x509 -pubkey -noout | openssl rsa -pubin -outform der | openssl dgst -sha256 -binary | base64
+        -->
+        <pin-set expiration="2026-06-01">
+            <!-- Production certificate public key hash (REPLACE with actual) -->
+            <pin digest="SHA-256">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</pin>
+            <!-- Backup pin (e.g., Let's Encrypt R3 or secondary CA) -->
+            <pin digest="SHA-256">BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=</pin>
+        </pin-set>
+    </domain-config>
+
+    <!-- Razorpay API for payments -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">api.razorpay.com</domain>
+        <domain includeSubdomains="true">checkout.razorpay.com</domain>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+        <pin-set expiration="2026-06-01">
+            <pin digest="SHA-256">WoiWRyIOVNa9ihaBciRSC7XHjliYS9VwUGOIud4PB18=</pin> <!-- Razorpay cert -->
+            <pin digest="SHA-256">YLh1dUR9y6Kja30RrAn7JKnbQG/uEtLMkBgFF2Fuihg=</pin> <!-- Let's Encrypt R3 -->
+            <pin digest="SHA-256">sRHdihwgkaib1P1gxX8HszxE1NvGp4iRsXg8RgmRjhk=</pin> <!-- Backup -->
+        </pin-set>
+    </domain-config>
+
+    <!-- AI / ML services -->
     <domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="true">api.anthropic.com</domain>
         <domain includeSubdomains="true">cdnjs.cloudflare.com</domain>
         <domain includeSubdomains="true">cdn.jsdelivr.net</domain>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </domain-config>
+
+    <!-- Debug / localhost for development — NO pinning, cleartext for emulator -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">10.0.2.2</domain>
+        <domain includeSubdomains="true">localhost</domain>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
     </domain-config>
 </network-security-config>

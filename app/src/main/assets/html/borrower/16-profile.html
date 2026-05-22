@@ -1,0 +1,25 @@
+    <!-- ════════════════════════════════════════
+         BORROWER: PROFILE
+    ════════════════════════════════════════ -->
+    <div class="screen" id="screen-b-profile">
+      <div class="top-nav"><button class="back-btn" onclick="showBTab('screen-b-home',null)" aria-label="Go back"><i class="ti ti-arrow-left"></i></button><h2>My Account</h2></div>
+      <div class="scroll-body" style="background:var(--surface);">
+        <div style="text-align:center;padding:30px 24px;">
+          <div style="width:72px;height:72px;border-radius:50%;background:var(--primary-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px;color:var(--primary);font-weight:700;">RK</div>
+          <h2 class="b-name" style="font-size:20px;font-weight:700;">Ramesh Kumar</h2>
+          <p style="font-size:13px;color:var(--text3);">+91 9876543210</p>
+        </div>
+        <div class="list-item" onclick="showScreen('screen-b-settings')" role="button" tabindex="0" aria-label="Open settings"><div class="list-icon blue"><i class="ti ti-settings"></i></div><div class="list-body" style="font-weight:600;font-size:14px;">Settings</div><i class="ti ti-chevron-right" style="color:var(--text3);"></i></div>
+        <div class="list-item"><div class="list-icon green"><i class="ti ti-shield-check"></i></div><div class="list-body" style="font-weight:600;font-size:14px;">KYC Status</div><span class="badge badge-green">Verified</span></div>
+        <div class="list-item" role="button" tabindex="0" onclick="showScreen('screen-b-mandates')" aria-label="Manage payment mandates"><div class="list-icon green"><i class="ti ti-receipt"></i></div><div class="list-body" style="font-weight:600;font-size:14px;">Manage Mandates</div><span class="badge badge-green" id="mandate-profile-badge" style="display:none;">Active</span></div>
+        <div class="list-item"><div class="list-icon amber"><i class="ti ti-cash"></i></div><div class="list-body" style="font-weight:600;font-size:14px;">Bank Account</div><span class="badge badge-blue">HDFC Bank</span></div>
+        <div class="list-item"><div class="list-icon purple"><i class="ti ti-help"></i></div><div class="list-body" style="font-weight:600;font-size:14px;">Help & Support</div><i class="ti ti-chevron-right" style="color:var(--text3);"></i></div>
+        <div class="list-item" onclick="logoutUser()" role="button" tabindex="0" aria-label="Logout"><div class="list-icon red"><i class="ti ti-logout"></i></div><div class="list-body" style="font-weight:600;font-size:14px;color:var(--red);">Logout</div></div>
+      </div>
+      <div class="bottom-nav g4">
+        <button class="nav-item" onclick="showBTab('screen-b-home',this)"><i class="ti ti-smart-home"></i><span>Home</span></button>
+        <button class="nav-item" onclick="showBTab('screen-b-apply',this)"><i class="ti ti-circle-plus"></i><span>Apply</span></button>
+        <button class="nav-item" onclick="showBTab('screen-b-schedule',this)"><i class="ti ti-calendar"></i><span>Schedule</span></button>
+        <button class="nav-item active" onclick="showBTab('screen-b-profile',this)"><i class="ti ti-user-circle"></i><span>Account</span></button>
+      </div>
+    </div>

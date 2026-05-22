@@ -1,0 +1,32 @@
+    <!-- BORROWER: AI TRUST SCORE (Standalone) -->
+    <div class="screen" id="screen-b-ai-score" style="background:#0F172A;">
+      <div class="top-nav" style="background:#0F172A; border-bottom:none;">
+        <button class="back-btn" onclick="showScreen('screen-b-kyc')" aria-label="Go back"><i class="ti ti-arrow-left"></i></button>
+        <h2>AI Trust Score</h2>
+      </div>
+      <div class="scroll-body" style="background:#0F172A; padding-bottom:0;">
+        <div style="padding:40px 24px; text-align:center;">
+          <div style="position:relative; width:160px; height:160px; margin:0 auto 30px;">
+             <svg style="width:160px; height:160px; transform:rotate(-90deg);">
+                <circle cx="80" cy="80" r="70" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="12"></circle>
+                <circle id="ai-circle" cx="80" cy="80" r="70" fill="none" stroke="var(--primary-light)" stroke-width="12" stroke-dasharray="440" stroke-dashoffset="440" style="transition: stroke-dashoffset 0.8s ease;"></circle>
+             </svg>
+             <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                <span id="ai-pct" style="font-size:36px; font-weight:800; color:#fff;">0%</span>
+                <span style="font-size:11px; color:rgba(255,255,255,0.5); text-transform:uppercase; font-weight:700; letter-spacing:1px;">Analysing</span>
+             </div>
+          </div>
+
+          <div style="background:rgba(255,255,255,0.05); border-radius:14px; padding:16px; text-align:left;">
+            <div id="ai-step-lbl" style="font-size:14px; color:#fff; font-weight:600; margin-bottom:12px;">Initializing TrustEngine...</div>
+            <div class="progress-bar" style="background:rgba(255,255,255,0.1); height:4px;"><div id="ai-prog" class="progress-fill" style="width:0%; background:var(--primary-light);"></div></div>
+
+            <div id="ai-checks" style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
+              <!-- Checks will appear here -->
+            </div>
+          </div>
+
+          <button id="ai-score-done" class="btn btn-primary" style="display:none; margin-top:30px; background:#fff; color:#0F172A;" onclick="showScreen('screen-b-offer')">Finalise Application →</button>
+        </div>
+      </div>
+    </div>

@@ -1,0 +1,72 @@
+    <!-- ════════════════════════════════════════
+         INVESTOR: MONTHLY STATEMENT
+    ════════════════════════════════════════ -->
+    <div class="screen" id="screen-i-statement">
+      <div class="top-nav" style="background:var(--green);"><button class="back-btn" onclick="showScreen('screen-i-profile')" aria-label="Go back"><i class="ti ti-arrow-left"></i></button><h2>Monthly Statement</h2></div>
+      <div class="scroll-body" style="background:var(--surface);">
+        <!-- Month Selector -->
+        <div style="display:flex;gap:8px;padding:16px;align-items:center;">
+          <button class="btn-sm btn-ghost" style="margin:0;" onclick="prevStatement()"><i class="ti ti-chevron-left"></i></button>
+          <select name="statement_month" id="statement-month" aria-label="Select month" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--surface);color:var(--text);" onchange="loadStatement()">
+            <option value="2025-05">May 2025</option>
+            <option value="2025-04">April 2025</option>
+            <option value="2025-03">March 2025</option>
+            <option value="2025-02">February 2025</option>
+            <option value="2025-01">January 2025</option>
+          </select>
+          <button class="btn-sm btn-ghost" style="margin:0;" onclick="nextStatement()"><i class="ti ti-chevron-right"></i></button>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="metric-grid">
+          <div class="metric"><div class="label">Interest Earned</div><div class="value green">₹1,455</div><div class="sub">+3.2% vs last month</div></div>
+          <div class="metric"><div class="label">Total Invested</div><div class="value blue">₹45,200</div><div class="sub">End of period</div></div>
+        </div>
+        <div class="metric-grid" style="margin-top:0;">
+          <div class="metric"><div class="label">Withdrawals</div><div class="value amber">₹0</div><div class="sub">No withdrawals this month</div></div>
+          <div class="metric"><div class="label">New Loans</div><div class="value purple">8</div><div class="sub">Added this month</div></div>
+        </div>
+
+        <!-- Transaction List -->
+        <div class="section-hdr"><h3>Transaction History</h3></div>
+        <div class="list-item">
+          <div class="list-icon green"><i class="ti ti-cash"></i></div>
+          <div class="list-body"><div style="font-weight:600;font-size:14px;">Interest Payment</div><div style="font-size:12px;color:var(--text3);">From 92 active loans</div></div>
+          <div style="text-align:right;"><div style="font-weight:700;color:var(--green);">+₹1,455</div><div style="font-size:11px;color:var(--text3);">May 31</div></div>
+        </div>
+        <div class="list-item">
+          <div class="list-icon blue"><i class="ti ti-plus"></i></div>
+          <div class="list-body"><div style="font-weight:600;font-size:14px;">New Investment</div><div style="font-size:12px;color:var(--text3);">Deployed to 8 new borrowers</div></div>
+          <div style="text-align:right;"><div style="font-weight:700;color:var(--red);">-₹4,000</div><div style="font-size:11px;color:var(--text3);">May 15</div></div>
+        </div>
+        <div class="list-item">
+          <div class="list-icon green"><i class="ti ti-cash"></i></div>
+          <div class="list-body"><div style="font-weight:600;font-size:14px;">Interest Payment</div><div style="font-size:12px;color:var(--text3);">From 84 active loans</div></div>
+          <div style="text-align:right;"><div style="font-weight:700;color:var(--green);">+₹1,380</div><div style="font-size:11px;color:var(--text3);">Apr 30</div></div>
+        </div>
+
+        <!-- Download -->
+        <div class="card card-tint-green" style="margin-top:16px;cursor:pointer;" onclick="showToast('Statement PDF downloaded','success')">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <i class="ti ti-file-download" style="font-size:22px;color:var(--green);"></i>
+            <div style="flex:1;">
+              <div style="font-weight:600;font-size:14px;">Download Statement (PDF)</div>
+              <div style="font-size:11px;color:var(--text3);">Tax-ready format · May 2025</div>
+            </div>
+            <i class="ti ti-chevron-right" style="color:var(--text3);"></i>
+          </div>
+        </div>
+
+        <!-- Tax Certificate -->
+        <div class="card" style="margin-top:8px;cursor:pointer;" onclick="showToast('Tax certificate downloaded','success')">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <i class="ti ti-certificate" style="font-size:22px;color:var(--amber);"></i>
+            <div style="flex:1;">
+              <div style="font-weight:600;font-size:14px;">Tax Certificate (FY 2024-25)</div>
+              <div style="font-size:11px;color:var(--text3);">Section 80C / Capital Gains summary</div>
+            </div>
+            <i class="ti ti-chevron-right" style="color:var(--text3);"></i>
+          </div>
+        </div>
+      </div>
+    </div>

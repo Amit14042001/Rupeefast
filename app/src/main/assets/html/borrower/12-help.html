@@ -1,0 +1,14 @@
+    <!-- ════════════════════════════════════════
+         BORROWER: AI CHAT ASSISTANT
+    ════════════════════════════════════════ -->
+    <div class="screen" id="screen-b-help">
+      <div class="top-nav"><button class="back-btn" onclick="showScreen('screen-b-home')" aria-label="Go back"><i class="ti ti-arrow-left"></i></button><h2>AI Assistant</h2></div>
+      <div class="chat-wrap" id="chat-wrap">
+        <div class="chat-msg bot">👋 Hi Ramesh! I'm your RupeeFast AI assistant. How can I help you today?</div>
+        <div class="chat-msg bot">You can ask me about your loan balance, repayment schedule, loan eligibility, or any other questions.</div>
+      </div>
+      <form class="chat-footer" onsubmit="sendChat();return false" style="margin:0">
+        <input type="text" id="chat-input" placeholder="Type a message..." aria-label="Chat message" onkeydown="if(event.key==='Enter') sendChat()">
+        <button onclick="sendChat()" aria-label="Send message"><i class="ti ti-send"></i></button>
+      </form>
+    </div>
