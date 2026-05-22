@@ -5,6 +5,8 @@ build/
 .idea/
 .env
 backend/coverage/
+mobile/coverage/
 backend/src/*.db
 backend/*.db
 backend/logs/
+*.keystore
