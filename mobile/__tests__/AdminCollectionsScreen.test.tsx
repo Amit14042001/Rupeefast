@@ -71,7 +71,7 @@ jest.mock('react-native-safe-area-context', () => {
   };
 });
 
-jest.mock('../../src/services/collections', () => ({
+jest.mock('@mocks/services/collections', () => ({
   updateCollectionLog: jest.fn().mockResolvedValue({ success: true }),
 }));
 
@@ -419,7 +419,7 @@ describe('AdminCollectionsScreen — log edit mode', () => {
   });
 
   it('saves changes and calls updateCollectionLog', async () => {
-    const collections = require('../../src/services/collections') as jest.Mocked<typeof import('../../src/services/collections')>;
+    const collections = require('@mocks/services/collections') as jest.Mocked<typeof import('@mocks/services/collections')>;
     collections.updateCollectionLog.mockResolvedValue({ success: true });
 
     const { findByText, getByPlaceholderText } = render(<Wrapper><AdminCollectionsScreen /></Wrapper>);
@@ -439,7 +439,7 @@ describe('AdminCollectionsScreen — log edit mode', () => {
 
   it('shows success alert on successful save', async () => {
     const alertSpy = jest.spyOn(Alert, 'alert');
-    const collections = require('../../src/services/collections') as jest.Mocked<typeof import('../../src/services/collections')>;
+    const collections = require('@mocks/services/collections') as jest.Mocked<typeof import('@mocks/services/collections')>;
     collections.updateCollectionLog.mockResolvedValue({ success: true });
 
     const { findByText, getByPlaceholderText } = render(<Wrapper><AdminCollectionsScreen /></Wrapper>);
@@ -453,7 +453,7 @@ describe('AdminCollectionsScreen — log edit mode', () => {
 
   it('shows error alert when save fails', async () => {
     const alertSpy = jest.spyOn(Alert, 'alert');
-    const collections = require('../../src/services/collections') as jest.Mocked<typeof import('../../src/services/collections')>;
+    const collections = require('@mocks/services/collections') as jest.Mocked<typeof import('@mocks/services/collections')>;
     collections.updateCollectionLog.mockResolvedValue({ success: false, error: 'DB error' });
 
     const { findByText, getByPlaceholderText } = render(<Wrapper><AdminCollectionsScreen /></Wrapper>);

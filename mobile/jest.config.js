@@ -13,6 +13,7 @@ module.exports = {
     '^../../src/services/offers$': '<rootDir>/__mocks__/services/offers.ts',
     '^../../src/services/collections$': '<rootDir>/__mocks__/services/collections.ts',
     '^../../src/services/fraud$': '<rootDir>/__mocks__/services/fraud.ts',
+    '^@mocks/(.*)$': '<rootDir>/__mocks__/$1',
   },
   collectCoverageFrom: [
     'app/**/*.tsx',

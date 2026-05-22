@@ -66,7 +66,7 @@ jest.mock('react-native-safe-area-context', () => {
   };
 });
 
-jest.mock('../../src/services/collections', () => ({
+jest.mock('@mocks/services/collections', () => ({
   createCollectionLog: jest.fn().mockResolvedValue({ success: true, logId: 42 }),
   updateCollectionLog: jest.fn().mockResolvedValue({ success: true }),
 }));
@@ -79,7 +79,7 @@ beforeEach(() => {
   jest.clearAllMocks();
   const expoRouter = require('expo-router') as jest.Mocked<typeof import('expo-router')>;
   expoRouter.useLocalSearchParams = jest.fn(() => ({})) as any;
-  const collections = require('../../src/services/collections') as jest.Mocked<typeof import('../../src/services/collections')>;
+  const collections = require('@mocks/services/collections') as jest.Mocked<typeof import('@mocks/services/collections')>;
   collections.createCollectionLog.mockResolvedValue({ success: true, logId: 42 });
   jest.spyOn(Alert, 'alert').mockImplementation(() => {});
 });
@@ -225,7 +225,7 @@ describe('CollectionLogScreen — submit', () => {
   it('calls createCollectionLog with correct data on valid submit', async () => {
     const expoRouter = require('expo-router');
     expoRouter.useLocalSearchParams = jest.fn(() => ({ loanId: '5', borrowerName: 'Ravi K.' })) as any;
-    const collections = require('../../src/services/collections');
+    const collections = require('@mocks/services/collections');
     collections.createCollectionLog.mockResolvedValueOnce({ success: true, logId: 42 });
 
     const { findByText, getByPlaceholderText } = render(<Wrapper><AgentCollectionLogScreen /></Wrapper>);
@@ -254,7 +254,7 @@ describe('CollectionLogScreen — submit', () => {
     const alertSpy = jest.spyOn(Alert, 'alert');
     const expoRouter = require('expo-router');
     expoRouter.useLocalSearchParams = jest.fn(() => ({ loanId: '5', borrowerName: 'Ravi K.' })) as any;
-    const collections = require('../../src/services/collections');
+    const collections = require('@mocks/services/collections');
     collections.createCollectionLog.mockResolvedValueOnce({ success: true, logId: 42 });
 
     const { findByText, getByPlaceholderText } = render(<Wrapper><AgentCollectionLogScreen /></Wrapper>);
@@ -278,7 +278,7 @@ describe('CollectionLogScreen — submit', () => {
     const alertSpy = jest.spyOn(Alert, 'alert');
     const expoRouter = require('expo-router');
     expoRouter.useLocalSearchParams = jest.fn(() => ({ loanId: '5', borrowerName: 'Ravi K.' })) as any;
-    const collections = require('../../src/services/collections');
+    const collections = require('@mocks/services/collections');
     collections.createCollectionLog.mockResolvedValueOnce({ success: false, error: 'DB error' });
 
     const { findByText, getByPlaceholderText } = render(<Wrapper><AgentCollectionLogScreen /></Wrapper>);

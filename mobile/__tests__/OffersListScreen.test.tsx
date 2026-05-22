@@ -98,7 +98,7 @@ const mockDefaultOffers = [mockActiveOffer1, mockActiveOffer2, mockExpiredOffer]
 // Store the offers array in a mutable container so tests can override it
 const mockState: { offers: any[] } = { offers: mockDefaultOffers };
 
-jest.mock('../../src/services/offers', () => ({
+jest.mock('@mocks/services/offers', () => ({
   fetchOffers: jest.fn(() => Promise.resolve(mockState.offers)),
   acceptOffer: jest.fn(() => Promise.resolve({ success: true, loanId: 101 })),
   rejectOffer: jest.fn(() => Promise.resolve({ success: true })),
@@ -187,8 +187,8 @@ describe('OffersListScreen — interactions', () => {
     const acceptAction = acceptAlertCall![2]?.find((btn: any) => btn?.text === 'Accept & Proceed');
     expect(acceptAction).toBeTruthy();
 
-    const offers = require('../../src/services/offers') as jest.Mocked<typeof import('../../src/services/offers')>;
-    await act(async () => { await acceptAction.onPress(); });
+    const offers = require('@mocks/services/offers') as jest.Mocked<typeof import('@mocks/services/offers')>;
+    await act(async () => { await acceptAction!.onPress!(); });
     expect(offers.acceptOffer).toHaveBeenCalled();
   });
 
@@ -207,8 +207,8 @@ describe('OffersListScreen — interactions', () => {
     const skipAction = skipAlertCall![2]?.find((btn: any) => btn?.text === 'Skip');
     expect(skipAction).toBeTruthy();
 
-    const offers = require('../../src/services/offers') as jest.Mocked<typeof import('../../src/services/offers')>;
-    await act(async () => { await skipAction.onPress(); });
+    const offers = require('@mocks/services/offers') as jest.Mocked<typeof import('@mocks/services/offers')>;
+    await act(async () => { await skipAction!.onPress!(); });
     expect(offers.rejectOffer).toHaveBeenCalled();
   });
 });
@@ -216,7 +216,7 @@ describe('OffersListScreen — interactions', () => {
 describe('OffersListScreen — accept error handling', () => {
   it('shows error alert when acceptOffer fails', async () => {
     const alertSpy = jest.spyOn(Alert, 'alert');
-    const offers = require('../../src/services/offers') as jest.Mocked<typeof import('../../src/services/offers')>;
+    const offers = require('@mocks/services/offers') as jest.Mocked<typeof import('@mocks/services/offers')>;
     offers.acceptOffer.mockResolvedValueOnce({ success: false, error: 'Server error' });
 
     const { findAllByText } = render(<Wrapper><BorrowerOffersListScreen /></Wrapper>);
@@ -226,7 +226,7 @@ describe('OffersListScreen — accept error handling', () => {
     const acceptAlertCall = alertSpy.mock.calls.find(([title]) => title === 'Accept Offer');
     const acceptAction = acceptAlertCall![2]?.find((btn: any) => btn?.text === 'Accept & Proceed');
 
-    await act(async () => { await acceptAction.onPress(); });
+    await act(async () => { await acceptAction!.onPress!(); });
 
     const errorAlertCall = alertSpy.mock.calls.find(([title]) => title === 'Error');
     expect(errorAlertCall).toBeTruthy();

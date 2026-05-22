@@ -71,7 +71,7 @@ jest.mock('react-native-safe-area-context', () => {
   };
 });
 
-jest.mock('../../src/services/fraud', () => ({
+jest.mock('@mocks/services/fraud', () => ({
   updateFraudEventStatus: jest.fn().mockResolvedValue({ success: true }),
 }));
 
@@ -295,7 +295,7 @@ describe('AdminFraudScreen — detail view', () => {
 describe('AdminFraudScreen — interactions', () => {
   it('calls updateFraudEventStatus when Start Investigation is pressed', async () => {
     const alertSpy = jest.spyOn(Alert, 'alert');
-    const fraud = require('../../src/services/fraud') as jest.Mocked<typeof import('../../src/services/fraud')>;
+    const fraud = require('@mocks/services/fraud') as jest.Mocked<typeof import('@mocks/services/fraud')>;
     fraud.updateFraudEventStatus.mockResolvedValue({ success: true });
 
     const { findByText } = render(<Wrapper><AdminFraudScreen /></Wrapper>);
@@ -313,7 +313,7 @@ describe('AdminFraudScreen — interactions', () => {
 
   it('shows error alert when updateFraudEventStatus fails', async () => {
     const alertSpy = jest.spyOn(Alert, 'alert');
-    const fraud = require('../../src/services/fraud') as jest.Mocked<typeof import('../../src/services/fraud')>;
+    const fraud = require('@mocks/services/fraud') as jest.Mocked<typeof import('@mocks/services/fraud')>;
     fraud.updateFraudEventStatus.mockResolvedValue({ success: false, error: 'Failed to update' });
 
     const { findByText } = render(<Wrapper><AdminFraudScreen /></Wrapper>);
@@ -329,7 +329,7 @@ describe('AdminFraudScreen — interactions', () => {
   });
 
   it('calls updateFraudEventStatus with dismiss for Dismiss button', async () => {
-    const fraud = require('../../src/services/fraud') as jest.Mocked<typeof import('../../src/services/fraud')>;
+    const fraud = require('@mocks/services/fraud') as jest.Mocked<typeof import('@mocks/services/fraud')>;
     fraud.updateFraudEventStatus.mockResolvedValue({ success: true });
 
     const { findByText } = render(<Wrapper><AdminFraudScreen /></Wrapper>);
@@ -349,7 +349,7 @@ describe('AdminFraudScreen — interactions', () => {
   });
 
   it('calls updateFraudEventStatus to confirm fraud for investigating events', async () => {
-    const fraud = require('../../src/services/fraud') as jest.Mocked<typeof import('../../src/services/fraud')>;
+    const fraud = require('@mocks/services/fraud') as jest.Mocked<typeof import('@mocks/services/fraud')>;
     fraud.updateFraudEventStatus.mockResolvedValue({ success: true });
 
     const { findByText } = render(<Wrapper><AdminFraudScreen /></Wrapper>);
@@ -365,7 +365,7 @@ describe('AdminFraudScreen — interactions', () => {
   });
 
   it('disables action buttons while updating (shows ActivityIndicator)', async () => {
-    const fraud = require('../../src/services/fraud') as jest.Mocked<typeof import('../../src/services/fraud')>;
+    const fraud = require('@mocks/services/fraud') as jest.Mocked<typeof import('@mocks/services/fraud')>;
     fraud.updateFraudEventStatus.mockImplementation(() => new Promise(() => {}));
 
     const { findByText } = render(<Wrapper><AdminFraudScreen /></Wrapper>);
